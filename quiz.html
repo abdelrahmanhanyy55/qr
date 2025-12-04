@@ -9,8 +9,28 @@
   --bg:#0f1724; --card:#0b1220; --accent:#00b4d8; --muted:#98a0b3; --success:#16a34a; --danger:#ef4444;
 }
 * { box-sizing:border-box; }
-body { margin:0; font-family:Arial,sans-serif; background:var(--bg); color:#e6eef8; display:flex; justify-content:center; align-items:center; padding:24px; min-height:100vh; }
-.container { display:grid; grid-template-columns:1fr 360px; gap:16px; width:100%; max-width:920px; background:var(--card); border-radius:12px; padding:18px; box-shadow:0 10px 30px rgba(2,6,23,0.6); }
+body { 
+    margin:0; 
+    font-family:Arial,sans-serif; 
+    background:var(--bg); 
+    color:#e6eef8; 
+    display:flex; 
+    justify-content:center; 
+    align-items:center; 
+    padding:24px; 
+    min-height:100vh;
+}
+.container { 
+    display:grid; 
+    grid-template-columns:1fr 360px; 
+    gap:16px; 
+    width:100%; 
+    max-width:920px; 
+    background:var(--card); 
+    border-radius:12px; 
+    padding:18px; 
+    box-shadow:0 10px 30px rgba(2,6,23,0.6); 
+}
 .quiz{padding:16px;}
 h1{margin:0 0 8px 0;font-size:20px;}
 .meta{color:var(--muted);font-size:13px;margin-bottom:12px;}
@@ -19,9 +39,7 @@ h1{margin:0 0 8px 0;font-size:20px;}
 .choices{display:flex;flex-direction:column;gap:8px;}
 .choice{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));}
 .choice:hover{transform:translateY(-2px);}
-.choice.selected{outline:2px solid rgba(0,180,216,0.18);}
-.choice.correct{background:linear-gradient(90deg, rgba(22,163,74,0.12), rgba(22,163,74,0.06));border-color:rgba(22,163,74,0.3);}
-.choice.wrong{background:linear-gradient(90deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03));border-color:rgba(239,68,68,0.25);}
+.choice.selected{outline:2px solid rgba(0,180,216,0.18);} 
 .controls{display:flex;gap:8px;align-items:center;margin-top:12px;}
 button{background:var(--accent);border:none;color:#042028;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;}
 button[disabled]{opacity:0.45;cursor:not-allowed;}
@@ -33,15 +51,36 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
 .results{text-align:center;}
 .small{font-size:13px;color:var(--muted);}
 .footer-note{font-size:12px;color:var(--muted);margin-top:8px;}
-pre.explain{white-space:pre-wrap;background:rgba(255,255,255,0.02);padding:10px;border-radius:6px;color:var(--muted);font-size:13px;}
-@media(max-width:940px){.container{grid-template-columns:1fr; padding:12px;}.sidebar{order:2}}
+
+/* Logo Positioning (Position Fixed for guaranteed placement) */
+.logo {
+    position: fixed; /* Positions relative to the viewport/window */
+    top: 24px;       
+    right: 24px;     
+    width: 140px;     
+    height: auto;
+    z-index: 100;    
+}
+
+@media(max-width:940px){
+    .container{grid-template-columns:1fr; padding:12px;}
+    .sidebar{order:2}
+    /* Adjust logo position/size for smaller screens */
+    .logo {
+        top: 12px;
+        right: 12px;
+        width: 45px;
+    }
+}
 </style>
 </head>
 <body>
+<img src="its.png" alt="ITS Logo" class="logo">
+
 <div class="container">
   <div class="quiz card" id="quizArea">
-    <h1>Cybersecurity Riddle Challenge</h1>
-    <div class="meta">15 riddles • experienced users • time limit: 15 minutes</div>
+    <h1>ITS Riddle Challenge</h1>
+    <div class="meta">15 riddles • experienced users • time limit: 10 minutes</div>
     <div id="questionCard" class="card" aria-live="polite">
       <div class="question" id="qText">Loading…</div>
       <div class="choices" id="choices"></div>
@@ -50,38 +89,30 @@ pre.explain{white-space:pre-wrap;background:rgba(255,255,255,0.02);padding:10px;
         <div class="small" style="margin-left:8px">Question <span id="qIndex">0</span> / <span id="qTotal">0</span></div>
       </div>
     </div>
-    <div id="explanationBlock" class="card" style="display:none">
-      <div style="font-weight:700">Explanation</div>
-      <pre class="explain" id="explainText"></pre>
-    </div>
     <div id="endBlock" class="card" style="display:none">
       <div class="results" id="resultSummary"></div>
       <div style="margin-top:12px">
-        <button id="retryBtn">Retry Quiz</button>
-        <button id="reviewBtn">Review Answers</button>
-      </div>
+        </div>
     </div>
   </div>
   <aside class="sidebar card" aria-label="status panel">
     <div>
-      <div class="stat"><div class="small">Time left</div><div class="timer" id="timeLeft">15:00</div></div>
+      <div class="stat"><div class="small">Time left</div><div class="timer" id="timeLeft">10:00</div></div>
       <div class="progress"><span id="timeProgress"></span></div>
     </div>
-    <div>
-      <div class="stat"><div class="small">Score</div><div id="score">0</div></div>
-      <div class="stat"><div class="small">Correct</div><div id="correctCount">0</div></div>
-      <div class="stat"><div class="small">Incorrect</div><div id="wrongCount">0</div></div>
-    </div>
+    
     <div>
       <div class="small">Question map</div>
       <div id="map" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
     </div>
-    <div class="footer-note small">Answers revealed after each question.</div>
+    
   </aside>
 </div>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3cb0GPBVrnnug-Obudwdr3Qayz1hEbhomS6A7GmUrSUSctjzsP0rawLr_I4QEKKOO/exec"; // Google Apps Script Web App URL (POST)
+const TIME_LIMIT = 10 * 60; // 10 minutes in seconds
+
 const QUESTIONS = [
   {q:"Riddle: The Sneaky Visitor\n\nI come into your house only when you open the door for me. I pretend to be someone you trust, but I'm not. What am I?",choices:["A delayed system update","A phishing email","A trusted program running in safe mode","An auto-generated login alert"],answer:1,explain:"A phishing email pretends to be trusted but is malicious."},
   {q:"Riddle: The Secret Keeper\n\nI protect your accounts like a lock on a treasure chest. But if you share me, I become useless. What am I?",choices:["A one-time verification code","A password","A browser autofill entry","A recovery backup phrase"],answer:1,explain:"Passwords protect your accounts and become useless if shared."},
@@ -93,30 +124,84 @@ const QUESTIONS = [
   {q:"Riddle: The Fake Friend Request\n\nI look like a message from someone you know, but I’m created by a criminal. What am I?",choices:["A compromised contact syncing request","A redirected DNS resolver response","A social engineering attempt","A spoofed MFA denial notification"],answer:2,explain:"Social engineering attempts trick you into trusting a malicious source."},
   {q:"Riddle: The Door That Never Closes\n\nI stay open on your device unless you tell me to stop. Attackers love me because I let them walk right in. What am I?",choices:["An outdated Bluetooth pairing session","An unused but open network port","A disabled auto-lock screen","A misconfigured display driver"],answer:1,explain:"Open network ports can be exploited by attackers if left unattended."},
   {q:"Riddle: The Shadow That Follows You\n\nI track your behavior online and show you things you didn’t ask for. What am I?",choices:["A corrupted DNS cache","A tracking cookie","A proxy timeout","A VPN handshake leak"],answer:1,explain:"Tracking cookies monitor online behavior without explicit consent."},
-  {q:"Riddle: The Pretend Protector\n\nI say I’ll keep you safe, but I’m actually the danger. I install myself when you search for “security tools.” What am I?",choices:["A rogue antivirus program","A browser incompatibility patch","A firmware integrity checker","A backup snapshot validator"],answer:0,explain:"Rogue antivirus programs pretend to protect but are malware themselves."},
+  {q:"Riddle: The Pretend Protector\n\nI say I’ll keep you safe, but I’m actually the danger. I install myself when you search for “security tools.” What am I?",choices:["A rogue antivirus program","A browser incompatibility patch","A firmware integrity checker","A backup snapshot validator"],answer:0,explain:"A rogue antivirus program pretends to protect but is malware itself."},
   {q:"Riddle: The Hidden Guest\n\nYou don't know I'm here. I run quietly for months, watching everything you do. What am I?",choices:["A corrupted syslog rotation","A rootkit","A silent DHCP conflict","A misconfigured cron job"],answer:1,explain:"Rootkits operate silently and give attackers control of your system."},
   {q:"Riddle: The Locked Treasure Box\n\nI protect important information. You need two things to open me—your brain and your phone. What am I?",choices:["A secure notes vault","Two-factor authentication","A salted hash","A biometric certificate"],answer:1,explain:"Two-factor authentication requires something you know and something you have."},
   {q:"Riddle: The Loud but Useless Guard\n\nI shout warnings, sometimes too many, until people stop listening to me. What am I?",choices:["A vulnerability scanner in default mode","SIEM alert fatigue","Constant failed-logon logs","A firewall with geo-blocking"],answer:1,explain:"SIEM alert fatigue occurs when too many alerts desensitize staff to real threats."},
   {q:"Riddle: The Messenger of Malware\n\nI look like an ordinary storage device. When you plug me in, I deliver a surprise — and it’s not a good one. What am I?",choices:["A boot-sector-infected USB drive","A corrupted NTFS file table","A removable NVMe enclosure","A firmware-flashed SD card"],answer:0,explain:"Boot-sector-infected USB drives execute malware as soon as they are plugged in."}
 ];
 
-let currentIndex=0,score=0,correct=0,wrong=0,selected=null,timerSeconds=15*60,timerInterval=null,total=QUESTIONS.length;
+let currentIndex=0,score=0,correct=0,wrong=0,selected=null,timerSeconds=TIME_LIMIT,timerInterval=null,total=QUESTIONS.length;
+
+// --- State Management Functions ---
+
+/**
+ * Saves the current essential quiz state to sessionStorage.
+ */
+function saveState() {
+    const state = {
+        currentIndex: currentIndex,
+        score: score,
+        correct: correct,
+        wrong: wrong,
+        timerSeconds: timerSeconds,
+        // We only save the index, the question state is loaded on render
+    };
+    sessionStorage.setItem('quizState', JSON.stringify(state));
+}
+
+/**
+ * Loads the quiz state from sessionStorage if it exists.
+ * @returns {boolean} True if state was loaded, false otherwise.
+ */
+function loadState() {
+    const savedState = sessionStorage.getItem('quizState');
+    if (savedState) {
+        const state = JSON.parse(savedState);
+        currentIndex = state.currentIndex;
+        score = state.score;
+        correct = state.correct;
+        wrong = state.wrong;
+        timerSeconds = state.timerSeconds;
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Clears the quiz state from sessionStorage (used when quiz finishes).
+ */
+function clearState() {
+    sessionStorage.removeItem('quizState');
+}
 
 // --- Quiz Logic ---
 function init() {
-  QUESTIONS.sort(()=>0.5 - Math.random());
-  document.getElementById('qTotal').textContent = total;
-  resetState(); renderQuestion(); renderMap(); startTimer();
+  if (loadState()) {
+      // If state loaded, we start the timer and render the current question
+      console.log("State loaded. Resuming quiz.");
+      document.getElementById('qTotal').textContent = total;
+      renderQuestion(); 
+      renderMap(); 
+      startTimer();
+  } else {
+      // If no state loaded, start quiz fresh
+      console.log("No state found. Starting new quiz.");
+      QUESTIONS.sort(()=>0.5 - Math.random());
+      document.getElementById('qTotal').textContent = total;
+      resetState(); 
+      renderQuestion(); 
+      renderMap(); 
+      startTimer();
+  }
 }
 
 function resetState() {
   currentIndex=0; score=0; correct=0; wrong=0; selected=null;
-  document.getElementById('score').textContent=score;
-  document.getElementById('correctCount').textContent=correct;
-  document.getElementById('wrongCount').textContent=wrong;
-  document.getElementById('explanationBlock').style.display='none';
+  timerSeconds=TIME_LIMIT; // Reset timer for a fresh start
   document.getElementById('endBlock').style.display='none';
   document.getElementById('questionCard').style.display='block';
+  clearState(); // Clear any residual state when starting fresh
 }
 
 function startTimer() {
@@ -124,7 +209,9 @@ function startTimer() {
   timerInterval=setInterval(()=>{
     timerSeconds--;
     if(timerSeconds<=0){ clearInterval(timerInterval); endQuiz(); return; }
-    updateTimeDisplay(); updateProgress();
+    updateTimeDisplay(); 
+    updateProgress();
+    saveState(); // Save state every second to keep the timer updated
   },1000);
 }
 
@@ -135,7 +222,7 @@ function updateTimeDisplay() {
 }
 
 function updateProgress() {
-  const pct=((15*60 - timerSeconds)/(15*60))*100;
+  const pct=((TIME_LIMIT - timerSeconds)/TIME_LIMIT)*100;
   document.getElementById('timeProgress').style.width=pct+'%';
 }
 
@@ -173,47 +260,65 @@ function renderQuestion() {
 }
 
 function selectAnswer(idx){
-  if(selected!==null) return;
-  selected=idx; const qObj=QUESTIONS[currentIndex];
+  if(selected!==null) return; 
+  
+  selected=idx; 
+  const qObj=QUESTIONS[currentIndex];
   const choices=document.getElementById('choices').children;
-  if(idx===qObj.answer){score+=10; correct++;} else {wrong++;}
-  document.getElementById('score').textContent=score;
-  document.getElementById('correctCount').textContent=correct;
-  document.getElementById('wrongCount').textContent=wrong;
-  for(let i=0;i<choices.length;i++){
-    choices[i].classList.remove('selected');
-    if(i===qObj.answer) choices[i].classList.add('correct');
-    else if(i===idx) choices[i].classList.add('wrong');
+  
+  // 1. Update Score (Backend only)
+  if(idx===qObj.answer){
+    score+=10; 
+    correct++;
+  } else {
+    wrong++;
   }
-  document.getElementById('explanationBlock').style.display='block';
-  document.getElementById('explainText').textContent=qObj.explain;
+  
+  // 2. Update Visuals
+  for(let i=0;i<choices.length;i++){
+    if(i===idx) {
+        // Apply blue outline to the selected answer (correct or wrong)
+        choices[i].classList.add('selected'); 
+    }
+    // Disable click events on all choices after selection
+    choices[i].style.pointerEvents = 'none'; 
+  }
+  saveState(); // Save state immediately after an answer is selected
 }
 
 document.getElementById('nextBtn').addEventListener('click',()=>{
+  if(selected===null) { 
+    alert("Please select an answer before proceeding.");
+    return;
+  }
   currentIndex++;
   if(currentIndex>=total){ endQuiz(); return; }
-  renderQuestion(); document.getElementById('explanationBlock').style.display='none';
+  
+  // Update state before rendering next question
+  saveState(); 
+  renderQuestion(); 
 });
 
-document.getElementById('retryBtn').addEventListener('click',()=>{
-  timerSeconds=15*60; clearInterval(timerInterval); init();
-});
-
-function jumpTo(idx){ currentIndex=idx; renderQuestion(); document.getElementById('explanationBlock').style.display='none'; }
+function jumpTo(idx){ 
+    currentIndex=idx; 
+    // No need to save state here, it will be saved on next answer/next click
+    renderQuestion(); 
+}
 
 function endQuiz() {
   clearInterval(timerInterval);
-  const timeUsed=15*60 - timerSeconds;
+  const timeUsed=TIME_LIMIT - timerSeconds;
   document.getElementById('questionCard').style.display='none';
-  document.getElementById('explanationBlock').style.display='none';
   document.getElementById('endBlock').style.display='block';
-  const perc=Math.round((score/(total*10))*100);
+  
+  // Display only completion message, not the score
   document.getElementById('resultSummary').innerHTML=`
-    <div style="font-size:18px;font-weight:800">${score} points — ${perc}%</div>
-    <div class="small" style="margin-top:6px">Correct: ${correct} / ${total} • Incorrect: ${wrong}</div>
+    <div style="font-size:18px;font-weight:800">Quiz Complete!</div>
+    <div class="small" style="margin-top:6px">Thank you for participating. Your results have been recorded.</div>
     <div class="small">Time taken: ${Math.floor(timeUsed/60)}m ${timeUsed%60}s</div>
   `;
   sendResultsToSheet(score,timeUsed);
+  clearState(); // Clear state because the quiz is finished
 }
 
 function sendResultsToSheet(score, timeTaken) {
@@ -221,7 +326,7 @@ function sendResultsToSheet(score, timeTaken) {
   const userData = sessionStorage.getItem('userData');
   
   if (!userData) {
-    alert("User data not found. Please go back and fill the form.");
+    console.error("User data not found. Score will not be saved."); 
     return;
   }
   
