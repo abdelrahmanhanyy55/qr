@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cybersecurity Quiz</title>
+<title>SOC Skill Gap assessment</title>
 <style>
 :root {
   --bg:#0f1724; --card:#0b1220; --accent:#00b4d8; --muted:#98a0b3; --success:#16a34a; --danger:#ef4444;
@@ -79,8 +79,8 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
 
 <div class="container">
   <div class="quiz card" id="quizArea">
-    <h1>ITS Riddle Challenge</h1>
-    <div class="meta">15 riddles • experienced users • time limit: 10 minutes</div>
+    <h1>SOC Skill Gap assessment</h1>
+    <div class="meta">198 questions • time limit: 90 minutes</div>
     <div id="questionCard" class="card" aria-live="polite">
       <div class="question" id="qText">Loading…</div>
       <div class="choices" id="choices"></div>
@@ -97,7 +97,7 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
   </div>
   <aside class="sidebar card" aria-label="status panel">
     <div>
-      <div class="stat"><div class="small">Time left</div><div class="timer" id="timeLeft">10:00</div></div>
+      <div class="stat"><div class="small">Time left</div><div class="timer" id="timeLeft">90:00</div></div>
       <div class="progress"><span id="timeProgress"></span></div>
     </div>
     
@@ -111,66 +111,1681 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3cb0GPBVrnnug-Obudwdr3Qayz1hEbhomS6A7GmUrSUSctjzsP0rawLr_I4QEKKOO/exec"; // Google Apps Script Web App URL (POST)
-const TIME_LIMIT = 10 * 60; // 10 minutes in seconds
+const TIME_LIMIT = 90 * 60; // 90 minutes in seconds
 
 const QUESTIONS = [
-  {q:"Riddle: The Sneaky Visitor\n\nI come into your house only when you open the door for me. I pretend to be someone you trust, but I'm not. What am I?",choices:["A delayed system update","A phishing email","A trusted program running in safe mode","An auto-generated login alert"],answer:1,explain:"A phishing email pretends to be trusted but is malicious."},
-  {q:"Riddle: The Secret Keeper\n\nI protect your accounts like a lock on a treasure chest. But if you share me, I become useless. What am I?",choices:["A one-time verification code","A password","A browser autofill entry","A recovery backup phrase"],answer:1,explain:"Passwords protect your accounts and become useless if shared."},
-  {q:"Riddle: The Disappearing Wallet\n\nI steal your money without touching your pocket. I trick you into typing your card details. What am I?",choices:["A cloned bank login page","A suspicious ATM skimmer","A misconfigured VPN session","A public Wi-Fi login portal"],answer:0,explain:"A cloned bank login page tricks you into giving card details."},
-  {q:"Riddle: The Noisy Guardian\n\nI shout when something suspicious happens. I don’t stop attacks but warn you about them. What am I?",choices:["A threat-monitoring dashboard","A security log parser","An antivirus alert","A behavioral analytics engine"],answer:2,explain:"An antivirus alert warns about suspicious activity but doesn't stop attacks directly."},
-  {q:"Riddle: The Spy in Your Hand\n\nI can see your location, photos, and messages. You trust me with everything. If I fall into the wrong hands, you're in danger. What am I?",choices:["Your smartphone","Your password manager","Your synced cloud drive","Your SIM card"],answer:0,explain:"Your smartphone holds most personal data and can be exploited if lost or stolen."},
-  {q:"Riddle: The Masked File\n\nI look innocent like a picture or a song, but once you open me, I cause chaos. What am I?",choices:["A malicious executable disguised with a double extension","A compressed archive containing mixed media","A sandboxed application running silently","A temporary swap file from a background process"],answer:0,explain:"Malicious executables can hide as innocent-looking files and execute harmful actions."},
-  {q:"Riddle: The Invisible Wall\n\nI stand between you and attackers. You don’t see me, but I block dangerous traffic. What am I?",choices:["A DNS sinkhole","A firewall","A default gateway’s ACL","A reverse proxy with rate-limits"],answer:1,explain:"A firewall blocks unauthorized traffic invisibly to users."},
-  {q:"Riddle: The Fake Friend Request\n\nI look like a message from someone you know, but I’m created by a criminal. What am I?",choices:["A compromised contact syncing request","A redirected DNS resolver response","A social engineering attempt","A spoofed MFA denial notification"],answer:2,explain:"Social engineering attempts trick you into trusting a malicious source."},
-  {q:"Riddle: The Door That Never Closes\n\nI stay open on your device unless you tell me to stop. Attackers love me because I let them walk right in. What am I?",choices:["An outdated Bluetooth pairing session","An unused but open network port","A disabled auto-lock screen","A misconfigured display driver"],answer:1,explain:"Open network ports can be exploited by attackers if left unattended."},
-  {q:"Riddle: The Shadow That Follows You\n\nI track your behavior online and show you things you didn’t ask for. What am I?",choices:["A corrupted DNS cache","A tracking cookie","A proxy timeout","A VPN handshake leak"],answer:1,explain:"Tracking cookies monitor online behavior without explicit consent."},
-  {q:"Riddle: The Pretend Protector\n\nI say I’ll keep you safe, but I’m actually the danger. I install myself when you search for “security tools.” What am I?",choices:["A rogue antivirus program","A browser incompatibility patch","A firmware integrity checker","A backup snapshot validator"],answer:0,explain:"A rogue antivirus program pretends to protect but is malware itself."},
-  {q:"Riddle: The Hidden Guest\n\nYou don't know I'm here. I run quietly for months, watching everything you do. What am I?",choices:["A corrupted syslog rotation","A rootkit","A silent DHCP conflict","A misconfigured cron job"],answer:1,explain:"Rootkits operate silently and give attackers control of your system."},
-  {q:"Riddle: The Locked Treasure Box\n\nI protect important information. You need two things to open me—your brain and your phone. What am I?",choices:["A secure notes vault","Two-factor authentication","A salted hash","A biometric certificate"],answer:1,explain:"Two-factor authentication requires something you know and something you have."},
-  {q:"Riddle: The Loud but Useless Guard\n\nI shout warnings, sometimes too many, until people stop listening to me. What am I?",choices:["A vulnerability scanner in default mode","SIEM alert fatigue","Constant failed-logon logs","A firewall with geo-blocking"],answer:1,explain:"SIEM alert fatigue occurs when too many alerts desensitize staff to real threats."},
-  {q:"Riddle: The Messenger of Malware\n\nI look like an ordinary storage device. When you plug me in, I deliver a surprise — and it’s not a good one. What am I?",choices:["A boot-sector-infected USB drive","A corrupted NTFS file table","A removable NVMe enclosure","A firmware-flashed SD card"],answer:0,explain:"Boot-sector-infected USB drives execute malware as soon as they are plugged in."}
+/* --- First small SOC batch --- */
+{q:"SOC Scenario: An employee reports a suspicious email asking them to verify their login credentials using a link. What should you identify this as?",
+ choices:["Phishing","DDoS attempt","System update","Credential caching"],
+ answer:0, explain:"A phishing attack attempts to steal login credentials through deceptive emails."},
+
+{q:"SOC Scenario: Multiple failed login attempts are observed from a foreign IP address within seconds. What does this indicate?",
+ choices:["Password reset","Brute-force attack","System maintenance","Normal user error"],
+ answer:1, explain:"Rapid failed attempts from an external IP suggest brute-force behavior."},
+
+{q:"SOC Scenario: You detect a sudden outbound traffic spike from an internal device to an unknown server. What is this most likely?",
+ choices:["Normal cloud sync","Data exfiltration attempt","Routine backup","DNS resolution"],
+ answer:1, explain:"Unexpected outbound spikes to unknown destinations commonly indicate data exfiltration."},
+
+{q:"SOC Scenario: A critical server shows signs of encryption on multiple files. What attack is happening?",
+ choices:["Ransomware","Phishing","SQL injection","DDoS"],
+ answer:0, explain:"File encryption spreading across a system is a hallmark of ransomware."},
+
+{q:"SOC Scenario: A user claims their system is running slow, and unknown programs are auto-starting. What is likely the cause?",
+ choices:["Malware infection","GPU overload","Network congestion","Incorrect OS update"],
+ answer:0, explain:"Unknown auto-starting programs typically signal malware."},
+
+{q:"SOC Scenario: You find that firewall logs show repeated requests to unreachable internal hosts. What is this behavior?",
+ choices:["Network scan / reconnaissance","File transfer","DNS query","Patch update"],
+ answer:0, explain:"Continuous probing of internal hosts suggests network reconnaissance."},
+
+{q:"SOC Scenario: SOC alerts show login at 3 AM from a country the employee has never visited. What is this?",
+ choices:["Legitimate remote work","Impossible travel alert","DNS misconfiguration","Email sync"],
+ answer:1, explain:"Logins from impossible locations indicate account compromise."},
+
+{q:"SOC Scenario: You detect repeated SQL queries with strange characters like ' OR 1=1 -- . What is this?",
+ choices:["Input sanitization test","SQL Injection attempt","Server backup","API timeout"],
+ answer:1, explain:"These patterns are common SQL injection payloads."},
+
+{q:"SOC Scenario: A device suddenly starts communicating with a known malicious C2 server. What does this indicate?",
+ choices:["OS update","Command-and-control communication","VPN sync","DNS flush"],
+ answer:1, explain:"C2 traffic indicates a compromised host receiving attacker commands."},
+
+{q:"SOC Scenario: Your IDS reports hundreds of SYN packets but no ACK responses. What is this?",
+ choices:["SYN flood attack","Normal handshake","ARP broadcast","VPN probing"],
+ answer:0, explain:"Numerous SYN packets with no ACK indicate a SYN flood DoS attack."},
+
+{q:"SOC Scenario: A user reports their files being replaced with .locked extensions. What attack is this?",
+ choices:["Ransomware","Phishing","Brute force","Keylogging"],
+ answer:0, explain:".locked extensions commonly represent encrypted ransomware files."},
+
+{q:"SOC Scenario: You detect a script that records keyboard input silently. What type of malware is this?",
+ choices:["Keylogger","Worm","Rootkit","Spyware"],
+ answer:0, explain:"Silent keystroke capture = keylogger."},
+
+{q:"SOC Scenario: Logs show a user account accessing sensitive HR files without authorization. What is this?",
+ choices:["Privilege misuse","System update","Backup verification","License sync"],
+ answer:0, explain:"Unauthorized internal access indicates privilege abuse."},
+
+{q:"SOC Scenario: A device keeps requesting the same DNS entry repeatedly and rapidly. What does this signal?",
+ choices:["DNS tunneling","Cache warming","DHCP renewal","ARP request"],
+ answer:0, explain:"Rapid repeated DNS queries indicate DNS tunneling."},
+
+{q:"SOC Scenario: You detect multiple endpoint alerts showing the same malware moving laterally. What is happening?",
+ choices:["Lateral movement","Port forwarding","Configuration sync","DHCP cycling"],
+ answer:0, explain:"Malware spreading host-to-host is lateral movement."},
+
+{q:"SOC Scenario: Firewall logs show unusual outbound connections on port 4444. What does this suggest?",
+ choices:["Reverse shell","Printer update","SSH maintenance","DHCP"],
+ answer:0, explain:"Port 4444 is commonly used for reverse shells."},
+
+{q:"SOC Scenario: An attacker changes system logs to hide their activity. What attack stage is this?",
+ choices:["Covering tracks","Reconnaissance","Delivery","Exploitation"],
+ answer:0, explain:"Modifying logs is part of covering tracks post-exploitation."},
+
+{q:"SOC Scenario: The SOC receives alerts for mass file deletion on a shared folder. What does this indicate?",
+ choices:["Insider threat","Normal cleanup","Compression event","Patch rollback"],
+ answer:0, explain:"Mass deletion is a common sign of insider threat or sabotage."},
+
+{q:"SOC Scenario: A critical system begins running unsigned executables. What is this likely?",
+ choices:["Malicious execution","GPU update","Port negotiation","Cloud sync"],
+ answer:0, explain:"Unsigned executables running unexpectedly strongly indicates malware."},
+
+{q:"SOC Scenario: You detect abnormal PowerShell commands like Invoke-WebRequest pulling scripts. What does this mean?",
+ choices:["Malicious PowerShell activity","Printer spooler error","User automation","Backup job"],
+ answer:0, explain:"Suspicious PowerShell commands often indicate malware or exploitation."},
+
+/* --- Large batch of SOC questions --- */
+
+/* K0018 - Encryption Algorithms */
+{q:"SOC Scenario: During a ransomware investigation, you find encrypted files with .locked extension. Network logs show the malware communicated with C2 using TLS 1.3. Which algorithm is typically used for the symmetric encryption of files in ransomware, and which is used for TLS session encryption?",
+ choices:["Files: AES; TLS: AES in GCM mode","Files: RSA; TLS: SHA-256","Files: MD5; TLS: 3DES","Files: Blowfish; TLS: RC4"],
+ answer:0, explain:"Modern ransomware uses AES for file encryption, while TLS 1.3 typically uses AES-GCM."},
+
+/* K0674 - Computer Networking Protocols */
+{q:"SOC Scenario: You're investigating C2 traffic. The malware beacon uses DNS TXT records to a suspicious domain, then establishes HTTPS to port 443. What protocol characteristic makes DNS tunneling effective for bypassing basic security controls?",
+ choices:["DNS is rarely blocked and allows data exfiltration in query fields","DNS uses strong encryption by default","DNS operates only on UDP port 53","DNS queries are never logged"],
+ answer:0, explain:"DNS tunneling exploits allowed DNS traffic to bypass firewalls; DNS is often allowed and carries data in queries."},
+
+/* K0682 - Cybersecurity Threats */
+{q:"SOC Scenario: Your SIEM alerts on suspicious PowerShell execution followed by network connections to new IPs. What threat category should you prioritize in your investigation?",
+ choices:["Phishing campaign","Living-off-the-land binary (LotL) attack","DDoS attack","Physical security breach"],
+ answer:1, explain:"LotL attacks use legitimate tools like PowerShell and can bypass signature-based detection."},
+
+/* K0683 - Cybersecurity Vulnerabilities */
+{q:"SOC Scenario: A vulnerability scan report shows CVE-2021-44228 on multiple servers. As a SOC analyst, what should you immediately check in your logs?",
+ choices:["Log4j-related strings and JNDI lookup patterns","SQL injection attempts","Failed RDP logins","Port scan activity"],
+ answer:0, explain:"Log4Shell exploits leave JNDI lookup patterns and Log4j-related strings in logs."},
+
+/* K0783 - Network Attack Characteristics */
+{q:"SOC Scenario: You see TCP SYN packets with spoofed source IPs flooding a web server from multiple sources. What attack type is this, and what's the primary indicator?",
+ choices:["DDoS SYN flood; incomplete TCP handshakes exhausting connections","Port scan; sequential port connections","DNS amplification; large DNS responses","HTTP flood; valid GET requests"],
+ answer:0, explain:"SYN floods produce many incomplete handshakes and exhaust connection resources."},
+
+/* K0831 - Network Attack Vectors */
+{q:"SOC Scenario: An attacker gains initial access via a phishing email, then uses SMB to move laterally. What makes SMB an effective lateral movement vector in Windows environments?",
+ choices:["Pass-the-hash attacks and credential reuse","SMB uses strong encryption","SMB is only used for file sharing","SMB cannot be monitored"],
+ answer:0, explain:"SMB supports credential reuse and pass-the-hash techniques that aid lateral movement."},
+
+/* K0844 - Cyberattack Stages */
+{q:"SOC Scenario: During an investigation, you find: 1) Reconnaissance scans from 2 weeks ago, 2) Successful phishing yesterday, 3) Credential dumping today. Using the Cyber Kill Chain, what stage comes next?",
+ choices:["Weaponization","Delivery","Lateral Movement","Actions on Objectives"],
+ answer:2, explain:"After credential dumping, attackers typically move laterally using those credentials."},
+
+/* K0845 - Cyber Intrusion Activity Phases */
+{q:"SOC Scenario: In a breach investigation, you discover beaconing every 5 minutes, then large data transfers at 2 AM. Which intrusion phases do these represent?",
+ choices:["Command & Control followed by Exfiltration","Initial access followed by privilege escalation","Reconnaissance followed by exploitation","Persistence followed by defense evasion"],
+ answer:0, explain:"Frequent beaconing indicates C2; large transfers at off-hours indicate exfiltration."},
+
+/* S0572 - Detecting Host- and Network-based Intrusions */
+{q:"SOC Scenario: Your EDR alerts show rundll32.exe spawning powershell.exe with encoded commands, which then downloads a file. What combination of indicators makes this highly suspicious?",
+ choices:["Unusual parent-child process relationship with encoded commands","PowerShell running during business hours","File download from Microsoft.com","Normal Windows update activity"],
+ answer:0, explain:"Unexpected parent-child chains and encoded commands are indicators of malicious activity."},
+
+/* S0838 - Identifying Anomalous Activities */
+{q:"SOC Scenario: A developer's workstation makes DNS queries to github.com and stackoverflow.com regularly. Today, it queried 50 random subdomains of malicious[.]xyz. What's the appropriate action?",
+ choices:["Investigate for DNS tunneling or C2 communication","Ignore as developer testing","Block all DNS immediately","Wait for more evidence"],
+ answer:0, explain:"Random subdomain queries to an unknown domain are classic signs of tunneling or C2."},
+
+/* S0859 - Performing Event Correlation */
+{q:"SOC Scenario: Your SIEM correlates: 1) Failed admin login from unfamiliar IP, 2) Successful user login from same IP 5 minutes later, 3) Privilege escalation attempt. What story does this tell?",
+ choices:["Credential compromise followed by privilege escalation attempt","Normal user forgot password","Automated scanning activity","Legitimate admin work"],
+ answer:0, explain:"Correlation shows probable credential compromise and escalation attempt."},
+
+/* S0866 - Performing Log File Analysis */
+{q:"SOC Scenario: In Windows Security Event logs, you see Event ID 4625 (failed login) followed by 4624 (successful login) from the same IP for the same account. What does this indicate?",
+ choices:["Possible brute-force attack success","Account lockout policy working","Legitimate password change","Kerberos ticket renewal"],
+ answer:0, explain:"Failed then successful logins from same source for same account suggest brute-force or credential stuffing succeeded."},
+
+/* T1084 - Identify Anomalous Network Activity */
+{q:"SOC Scenario: A database server that normally has 1-2 GB/day outbound traffic suddenly sends 50 GB to an external IP overnight. What's your first step?",
+ choices:["Investigate for data exfiltration","Assume it's a backup job","Block the external IP immediately","Wait to see if it repeats"],
+ answer:0, explain:"Such a large deviation strongly suggests possible exfiltration and needs investigation."},
+
+/* T1299 - Determine Causes of Network Alerts */
+{q:"SOC Scenario: Your IDS alerts on 'ET SCAN Suspicious UDP to Port 5060' (SIP/VoIP). What investigation steps would determine if this is malicious?",
+ choices:["Check if source IP is internal/external, review SIP logs, check for scanning patterns","Block all UDP traffic immediately","Ignore as VoIP is always legitimate","Assume it's a false positive"],
+ answer:0, explain:"Contextual checks (origin, logs, patterns) help validate if it's malicious or legitimate VoIP traffic."},
+
+/* T1386 - Analyze Network Traffic Anomalies */
+{q:"SOC Scenario: You notice HTTPS traffic to legitimate CDN domains, but the JA3/S fingerprints don't match known browsers. What might this indicate?",
+ choices:["Malware using HTTPS for C2 with custom TLS implementations","New browser versions","Corporate proxy issues","Normal mobile traffic"],
+ answer:0, explain:"Custom JA3 fingerprints often indicate non-browser TLS clients (e.g., malware C2)."},
+
+/* K0724 - Incident Response Principles */
+{q:"SOC Scenario: You confirm ransomware on a critical file server. What's the correct containment sequence?",
+ choices:["Isolate server → Determine scope → Preserve evidence → Begin recovery","Begin restoration → Notify management → Investigate","Delete encrypted files → Reinstall OS → Restore from backup","Pay ransom → Decrypt files → Improve security"],
+ answer:0, explain:"Containment first, then scope & evidence preservation, then recovery."},
+
+/* K0725 - Incident Response Tools */
+{q:"SOC Scenario: You need to quickly gather forensic data from a compromised Windows system before containment. Which tool combination is most effective?",
+ choices:["KAPE for rapid triage + Velociraptor for memory analysis","Manual file copying","Reimaging the system","Only reviewing logs"],
+ answer:0, explain:"KAPE for targeted triage plus Velociraptor for deep memory analysis is an effective combo."},
+
+/* K1181 - Organizational Cybersecurity Incident Response Plans */
+{q:"SOC Scenario: During a data breach investigation, you discover PII was accessed. According to your IR plan, who must be notified within the first hour?",
+ choices:["CISO, Legal, and Privacy Officer","All employees","Only your team lead","The media"],
+ answer:0, explain:"Immediate notification to leadership, legal, and privacy ensures compliant response."},
+
+/* S0593 - Handling Incidents */
+{q:"SOC Scenario: You receive an alert for suspicious outbound traffic at 3 AM. What's your first documented action?",
+ choices:["Record timestamp, alert details, and initial assessment in ticketing system","Call the system owner","Contain the system","Go back to sleep"],
+ answer:0, explain:"Documentation is the first step to preserve chain-of-custody and track response."},
+
+/* T1241 - Document Cybersecurity Incidents */
+{q:"SOC Scenario: What information is CRITICAL to include in every incident report for potential legal proceedings?",
+ choices:["Timestamps, evidence locations, actions taken, and personnel involved","Assumptions about attacker identity","Technical jargon only","Color-coded charts"],
+ answer:0, explain:"Legal proceedings require objective, timestamped evidence and action logs."},
+
+/* T1242 - Escalate Incidents */
+{q:"SOC Scenario: You confirm active data exfiltration involving customer PII. According to procedure, who gets immediate escalation?",
+ choices:["CISO, Legal, and IR team lead","Help desk","System administrator only","Marketing department"],
+ answer:0, explain:"Escalate to senior leadership and legal for business and regulatory decisions."},
+
+/* T1347 - Detect Cybersecurity Attacks */
+{q:"SOC Scenario: Your SIEM shows multiple Event ID 4625 (failed logins) from different IPs targeting the same admin account, followed by 4624 (success). What detection rule should fire?",
+ choices:["Brute force attack success detection","Normal user behavior","Password policy test","Network scanning"],
+ answer:0, explain:"This pattern indicates a brute-force or credential stuffing event followed by a success."},
+
+/* T1348 - Distinguish Benign vs Malicious */
+{q:"SOC Scenario: A vulnerability scanner triggers IDS alerts during authorized scanning. How do you distinguish this from real attacks?",
+ choices:["Verify scanning schedule, check source IP against authorized scanners, review full context","Block all scanning traffic","Treat as malicious","Ignore all scanner traffic"],
+ answer:0, explain:"Validate with scan schedules and source IPs to reduce false positives."},
+
+/* T1350 - Perform Continuous Monitoring */
+{q:"SOC Scenario: During routine monitoring, you notice a service account successfully authenticating from a new country. What's your response?",
+ choices:["Investigate as potential credential compromise","Ignore as service accounts don't travel","Immediately disable the account","Wait for more logins"],
+ answer:0, explain:"Investigate anomalous authentications, especially service accounts used in automation."},
+
+/* T1387 - Validate IDS Alerts */
+{q:"SOC Scenario: Snort alerts on 'ET EXPLOIT Possible CVE-2017-0144 SMB Exploit.' How do you validate if exploitation occurred?",
+ choices:["Check Windows Event Logs for MS17-010 related events, examine memory for shellcode","Assume alert is accurate","Ignore as old vulnerability","Block all SMB traffic"],
+ answer:0, explain:"Use logs and memory for signs of exploitation rather than assuming alerts are correct."},
+
+/* T1388 - Isolate Malware */
+{q:"SOC Scenario: You identify malware calling home from a critical server. What isolation method preserves evidence while preventing spread?",
+ choices:["Disconnect network cable, leave powered on for memory analysis","Immediate power off","Delete malware files","Continue monitoring"],
+ answer:0, explain:"Disconnecting network while leaving host powered preserves volatile memory for analysis."},
+
+/* T1428 - Notify Stakeholders */
+{q:"SOC Scenario: During a breach, the Marketing Director asks for details to prepare a press release. What's your response according to IR procedures?",
+ choices:["Direct to Legal/Compliance for approved messaging","Provide all technical details","Share preliminary findings","Refuse to communicate"],
+ answer:0, explain:"Communications must go through legal/compliance for approved messaging."},
+
+/* >>> NEW QUESTION YOU ASKED TO ADD <<< */
+/* T1615 - Advise on Vulnerability Compliance */
+{q:"SOC Scenario: PCI scan shows vulnerability but system can't be patched. What's your compliance advice?",
+ choices:[
+   "Document compensating controls and risk acceptance",
+   "Ignore the finding",
+   "Falsify the report",
+   "Claim it's fixed"
+ ],
+ answer:0,
+ explain:"Compliance requires honest assessment and documentation of compensating controls and formally accepted risk."
+},
+
+/* T1616 - Resolve Computer Security Incidents */
+{q:"SOC Scenario: After containing a phishing incident, what's the final step before closing the ticket?",
+ choices:["Document lessons learned and update detection rules","Delete all evidence","Forget about it","Only notify the user"],
+ answer:0, explain:"Incident resolution includes documenting lessons and improving detection to prevent recurrence."},
+
+/* K0917 - PII Data Security */
+{q:"SOC Scenario: You discover a database containing SSNs, addresses, and medical codes was accessed by an attacker. What regulations likely apply?",
+ choices:["HIPAA for medical data, plus state breach laws","Only PCI DSS","No regulations apply","GDPR only if EU citizens affected"],
+ answer:0, explain:"Medical data falls under HIPAA; state breach notification laws also apply."},
+
+/* K0676 - Cybersecurity Laws */
+{q:"SOC Scenario: Your investigation reveals a breach affecting 500 California residents. What notification timeline applies under CCPA?",
+ choices:["72 hours for regulatory notification, timing varies for consumers","30 days for all notifications","No notification required","1 year deadline"],
+ answer:0, explain:"State breach laws often require prompt notification; timelines vary — SOC should engage legal and privacy teams quickly."},
+
+/* K0691 - Cyber Defense Tools */
+{q:"SOC Scenario: You need to investigate suspicious process activity across 500 endpoints. Which tool category provides the necessary visibility?",
+ choices:["EDR/XDR platforms","Network firewalls","Web proxies","Vulnerability scanners"],
+ answer:0, explain:"EDR/XDR gives endpoint-level process visibility across many hosts."},
+
+/* K0692 - Vulnerability Assessment Tools */
+{q:"SOC Scenario: A critical vulnerability is announced. You need to quickly identify affected systems before attackers exploit it. What tool approach works best?",
+ choices:["Authenticated vulnerability scanner with latest plugins","Manual system checking","Network port scanning only","Waiting for patch Tuesday"],
+ answer:0, explain:"Authenticated scans provide accurate inventory and vulnerability coverage quickly."},
+
+/* K0950 - IDS Tools */
+{q:"SOC Scenario: Your Suricata alerts on a SQL injection attempt. What part of the rule triggered, and how do you investigate?",
+ choices:["Content match on SQL keywords; check web server logs for the payload","Protocol violation; ignore as false positive","Traffic volume; check for DDoS","Port scan detection; review firewall logs"],
+ answer:0, explain:"IDS content matches (SQL keywords/payload) should be validated by checking web server logs for actual payloads."},
+
+/* K1089 - Protocol Analyzer Tools */
+{q:"SOC Scenario: You suspect data exfiltration via HTTPS to a cloud storage service. How can you investigate without breaking encryption?",
+ choices:["Analyze JA3/S fingerprints, certificate details, and timing patterns","Decrypt with private key","Man-in-the-middle decryption","Cannot investigate encrypted traffic"],
+ answer:0, explain:"TLS fingerprinting and metadata analysis (JA3, certs, timing) can reveal suspicious clients without decrypting payload."},
+
+/* S0156 - Performing Packet-Level Analysis */
+{q:"SOC Scenario: In Wireshark, you see TCP flags [SYN], [SYN, ACK], [ACK], then immediate [RST]. What does this indicate?",
+ choices:["Successful connection followed by immediate termination","Failed connection attempt","Normal data transfer","Port scan in progress"],
+ answer:0, explain:"A connection that completes handshake and then immediately resets indicates successful connect then termination."},
+
+/* S0544 - Recognizing Vulnerabilities */
+{q:"SOC Scenario: Reviewing web logs, you see GET /api/users?id=1' OR '1'='1. What vulnerability is being tested?",
+ choices:["SQL Injection","XSS","CSRF","SSRF"],
+ answer:0, explain:"The payload is classic SQL injection trying to force true condition."},
+
+/* S0651 - Performing Malware Analysis */
+{q:"SOC Scenario: You have a suspicious PDF from a phishing email. What's the safest first analysis step?",
+ choices:["Static analysis in sandboxed environment","Open on your workstation","Send to colleagues","Delete immediately"],
+ answer:0, explain:"Static/sandboxed analysis isolates risk while allowing inspection of indicators."},
+
+/* S0712 - Evaluating Data Source Quality */
+{q:"SOC Scenario: You receive a threat intelligence feed with 10,000 IOCs but no context. How do you evaluate its usefulness?",
+ choices:["Check for relevance to your environment, false positive rate, and actionable context","Assume all IOCs are valuable","Implement all immediately","Ignore for lack of volume"],
+ answer:0, explain:"Assessing relevance and false positives ensures intelligence is actionable and not overwhelming."},
+
+/* S0874 - Performing Network Traffic Analysis */
+{q:"SOC Scenario: You notice beaconing every 17 minutes to a new domain. What metrics help confirm C2 communication?",
+ choices:["Regularity, failed connection retry patterns, small request/large response","Only volume of traffic","Source IP reputation","Protocol used"],
+ answer:0, explain:"C2 often shows regular timing and characteristic request/response patterns useful for confirmation."},
+
+/* K1131 - Cyber Defense Monitoring Tools */
+{q:"SOC Scenario: You need to monitor for suspicious PowerShell execution across the enterprise. Which tool provides this capability?",
+ choices:["SIEM with PowerShell logging integration","Network IDS only","Web proxy logs","Firewall logs"],
+ answer:0, explain:"SIEM integrated with PowerShell logging can aggregate and alert on suspicious commands."},
+
+/* K1193 - Packet Analysis Tools */
+{q:"SOC Scenario: You need to extract files from PCAP of malware download. What tool feature is needed?",
+ choices:["File carving or export HTTP objects","Only protocol decoding","Statistical analysis","GeoIP mapping"],
+ answer:0, explain:"PCAP file export / HTTP object extraction allows retrieving downloaded files for analysis."},
+
+/* T0292 - Recommend Vulnerability Corrections */
+{q:"SOC Scenario: A critical vulnerability in an internet-facing system can't be patched for 48 hours. What do you recommend?",
+ choices:["Temporary WAF rules and network ACLs","Do nothing until patch","Take system offline","Accept the risk"],
+ answer:0, explain:"Mitigations like WAF rules and ACLs reduce exposure while patching is delayed."},
+
+/* T1119 - Recommend Vulnerability Remediation */
+{q:"SOC Scenario: A scan shows 1,000 vulnerabilities. How should you advise prioritization?",
+ choices:["By CVSS score, exploit availability, and asset criticality","Alphabetically","Easiest to fix first","Random selection"],
+ answer:0, explain:"Prioritize based on severity, exploitability, and business impact."},
+
+/* T1406 - Construct Signatures */
+{q:"SOC Scenario: New malware uses specific User-Agent 'MalBot/1.0'. How would you write a Suricata rule?",
+ choices:["alert http any any -> any any (msg:\"MalBot UA detected\"; http.user_agent; content:\"MalBot/1.0\"; sid:1000001;)","Block all Chrome traffic","No signature possible","Generic malware rule"],
+ answer:0, explain:"A focused Suricata rule matching the UA string detects this malware's traffic."},
+
+/* T1582 - Maintain Threat Conditions */
+{q:"SOC Scenario: A new ransomware variant emerges. What should you update in your defense systems?",
+ choices:["IOCs, detection signatures, and hunting hypotheses","Nothing, wait for vendor updates","Only firewall rules","Just document it"],
+ answer:0, explain:"Updating IOCs, signatures, and hunting plans ensures detection and response readiness."},
+
+/* K0788 - Adversarial Tactics */
+{q:"SOC Scenario: An attacker uses certutil.exe to decode a malicious payload. Which MITRE ATT&CK technique is this?",
+ choices:["T1140 - Deobfuscate/Decode Files or Information","T1059 - Command and Scripting Interpreter","T1566 - Phishing","T1082 - System Information Discovery"],
+ answer:0, explain:"Using certutil to decode files is a deobfuscation technique mapped to T1140."},
+
+/* K0789 - Adversarial Tools */
+{q:"SOC Scenario: You find mimikatz.exe in memory. What's the primary concern?",
+ choices:["Credential dumping and privilege escalation","Network scanning","File encryption","Keylogging"],
+ answer:0, explain:"Mimikatz is widely used for extracting credentials from memory."},
+
+/* K0813 - Programming Language Characteristics */
+{q:"SOC Scenario: You find a malicious Python script malware.py. What makes it easier to analyze than compiled malware?",
+ choices:["Readable source code without disassembly","Faster execution","Harder to obfuscate","Less powerful"],
+ answer:0, explain:"Source code is directly readable, simplifying analysis vs. compiled binaries."},
+
+/* K0842 - Software Reverse Engineering */
+{q:"SOC Scenario: You need to analyze a Windows executable without execution. What's your first tool?",
+ choices:["PEiD or Detect It Easy for initial triage","Execute in sandbox","Strings command only","Disassembler immediately"],
+ answer:0, explain:"Triage tools identify packers and basic metadata before deeper reversing."},
+
+/* K0860 - Malware Signature Principles */
+{q:"SOC Scenario: Your AV detects Trojan.Win32.Generic!BT. What does !BT indicate?",
+ choices:["Behavioral detection component","False positive marker","Encryption type","Target industry"],
+ answer:0, explain:"!BT commonly indicates a behavioral detection heuristic was used."},
+
+/* K0955 - Penetration Testing Principles */
+{q:"SOC Scenario: During authorized testing, you discover a critical vulnerability. What's the proper procedure?",
+ choices:["Document and report through approved channels","Exploit immediately","Tell system owners directly","Ignore as not your job"],
+ answer:0, explain:"Follow the agreed reporting channels and rules of engagement."},
+
+/* K0969 - Cyberattack Tools */
+{q:"SOC Scenario: You find Cobalt Strike beacon in memory. What capabilities should you expect?",
+ choices:["Advanced C2, lateral movement, data exfiltration","Only scanning","DDoS capabilities","Cryptocurrency mining"],
+ answer:0, explain:"Cobalt Strike provides advanced C2, lateral movement, and exfil features."},
+
+/* S0483 - Identifying Software Communications Vulnerabilities */
+{q:"SOC Scenario: An API accepts serialized JSON objects without validation. What vulnerability class should you test for?",
+ choices:["Insecure deserialization","XSS","CSRF","SQLi"],
+ answer:0, explain:"Unvalidated serialized objects can lead to insecure deserialization vulnerabilities."},
+
+/* S0566 - Developing Signatures */
+{q:"SOC Scenario: New malware uses XOR key 0xAA for obfuscation. How would you create a YARA rule?",
+ choices:["Include XOR pattern matching in rule condition","Only exact string matching","Generic malware rule","No signature possible"],
+ answer:0, explain:"YARA rules can include conditions that detect XOR-obfuscated patterns."},
+
+/* S0857 - Performing Dynamic Analysis */
+{q:"SOC Scenario: In a sandbox, malware detects virtualization and exits. How do you proceed?",
+ choices:["Use anti-evasion techniques or bare metal analysis","Assume benign","Mark as false positive","No further analysis"],
+ answer:0, explain:"Use more advanced analysis (anti-evasion or physical hardware) to avoid sandbox detection."},
+
+/* S0867 - Performing Malicious Activity Analysis */
+{q:"SOC Scenario: Malware creates scheduled task for persistence. Where do you look in Windows?",
+ choices:["Registry Run keys, Scheduled Tasks, Startup folders","Only running processes","Network connections only","File system timestamps"],
+ answer:0, explain:"Windows persistence commonly uses Run keys, scheduled tasks, and startup folders."},
+
+/* S0869 - Performing Metadata Analysis */
+{q:"SOC Scenario: A malicious document has author field \"Microsoft Corp\" but metadata shows different creator. What's suspicious?",
+ choices:["Metadata-author mismatch suggesting forgery","Nothing, documents often have incorrect metadata","File size","Creation date"],
+ answer:0, explain:"A mismatch between declared author and metadata creator suggests forgery."},
+
+/* T1254 - Determine Attack Effectiveness */
+{q:"SOC Scenario: After phishing response, you need to determine if credentials were stolen. What's definitive evidence?",
+ choices:["Successful logins with compromised credentials","Phishing email receipt","User clicked link","Malware detection"],
+ answer:0, explain:"Successful logins using stolen credentials provide direct evidence of compromise."},
+
+/* T1351 - Determine Impact of Malicious Activity */
+{q:"SOC Scenario: Ransomware encrypted files but backup restoration works. What's the primary impact?",
+ choices:["Availability loss during restoration","Data theft","Financial loss to ransom","Reputation damage only"],
+ answer:0, explain:"If backups restore data, the main impact is downtime and availability loss while restoring."},
+
+/* T1391 - Reconstruct Malicious Attacks */
+{q:"SOC Scenario: You have logs showing initial access, lateral movement, and data exfiltration. What helps create timeline?",
+ choices:["Correlating timestamps across all evidence sources","Guessing based on experience","Only using firewall logs","Asking the attacker"],
+ answer:0, explain:"Correlating timestamps across sources is essential for accurate timelines."},
+
+/* K0677 - Cybersecurity Policies */
+{q:"SOC Scenario: During an incident, you need to preserve a compromised server as evidence. What policy guides evidence handling?",
+ choices:["Incident Response Policy - Evidence Preservation section","Password Policy","Remote Access Policy","Acceptable Use Policy"],
+ answer:0, explain:"Evidence preservation is normally governed by the IR policy's evidence section."},
+
+/* K0829 - Account Creation Policies */
+{q:"SOC Scenario: A new employee needs access to sensitive financial systems. What policy requirements apply?",
+ choices:["Manager approval, least privilege, and documented justification","Automatic full access","No approval needed","Share existing credentials"],
+ answer:0, explain:"Onboarding for sensitive systems requires approvals and least-privilege principles."},
+
+/* K0830 - Password Policies */
+{q:"SOC Scenario: You discover service accounts with passwords never expiring. What policy violation is this?",
+ choices:["Password rotation requirement","Complexity requirement","Length requirement","No violation"],
+ answer:0, explain:"Service accounts often must adhere to password rotation policies; never-expiring passwords violate rotation rules."},
+
+/* K0918 - PCI Data Security */
+{q:"SOC Scenario: You find unencrypted credit card numbers in a database. What's the immediate compliance concern?",
+ choices:["PCI DSS Requirement 3 - Protect stored cardholder data","HIPAA violation","GDPR concern only","No compliance issue"],
+ answer:0, explain:"Storing unencrypted cardholder data violates PCI DSS requirement to protect stored data."},
+
+/* T1020 - Determine Operational Impacts */
+{q:"SOC Scenario: Ransomware affects hospital systems. What's the safety (not just operational) impact?",
+ choices:["Patient care disruption potentially endangering lives","Only financial loss","Reputation damage only","No safety impact"],
+ answer:0, explain:"Ransomware impacting hospital systems can jeopardize patient care and safety."},
+
+/* T1176 - Determine Risk Reduction */
+{q:"SOC Scenario: A new EDR reduces malware incidents by 80% but costs $200K/year. How do you justify it?",
+ choices:["Compare cost to potential breach costs prevented","No justification needed","Based on vendor claims only","Don't implement due to cost"],
+ answer:0, explain:"Security investments should be justified by potential cost of prevented breaches and risk reduction."},
+
+/* T1266 - Recommend Risk Mitigation */
+{q:"SOC Scenario: Legacy system can't be patched but is business-critical. What do you recommend?",
+ choices:["Network segmentation, monitoring, and formal risk acceptance","Immediate decommission","Ignore the risk","Hide from auditors"],
+ answer:0, explain:"Compensating controls like segmentation and monitoring plus formal acceptance are practical."},
+
+/* T1540 - Develop Posture Trend Reports */
+{q:"SOC Scenario: Monthly reports show increasing phishing success. What should your report recommend?",
+ choices:["Enhanced security awareness training","More firewalls","Nothing, it's normal","Block all email"],
+ answer:0, explain:"Training addresses the human element and reduces phishing success."},
+
+/* T1603 - Recommend Risk Mitigation Strategies */
+{q:"SOC Scenario: Zero-day affects all Windows systems. What's your immediate strategy?",
+ choices:["Implement vendor workarounds, increase monitoring, prepare patches","Do nothing until patch Tuesday","Panic and shut everything down","Accept complete risk"],
+ answer:0, explain:"Mitigation, monitoring, and readiness for patching are immediate pragmatic steps."},
+
+ {
+  q: "SOC Scenario: PCI scan shows vulnerability but system can't be patched. What's your compliance advice?",
+  choices: [
+    "Ignore the finding",
+    "Document compensating controls and risk acceptance",
+    "Falsify the report",
+    "Claim it's fixed"
+  ],
+  answer: 1,
+  explain: "Compliance requires honest assessment and documentation."
+},
+{
+  q: "SOC Scenario: Ransomware encrypted backups too. What DR improvement do you recommend?",
+  choices: [
+    "Air-gapped or immutable backups",
+    "No improvements needed",
+    "More frequent backups",
+    "Better encryption"
+  ],
+  answer: 0,
+  explain: "Lessons from incidents improve resilience."
+},
+{
+  q: "SOC Scenario: A vulnerability has 70% exploit likelihood with $500K impact. Business accepts risks below $200K. What's your assessment?",
+  choices: [
+    "$350K risk - requires mitigation",
+    "Acceptable risk",
+    "Ignore completely",
+    "Immediate system shutdown"
+  ],
+  answer: 0,
+  explain: "Risk quantification informs decision-making."
+},
+{
+  q: "SOC Scenario: During red team exercise, they request to test phishing. What policy governs this?",
+  choices: [
+    "Rules of Engagement document",
+    "No policy needed",
+    "Acceptable Use Policy only",
+    "HR policies"
+  ],
+  answer: 0,
+  explain: "Controlled testing requires clear boundaries."
+},
+{
+  q: "SOC Scenario: You need to structure your SOC's capabilities. Which framework provides maturity levels?",
+  choices: [
+    "NIST Cybersecurity Framework",
+    "ISO 27001 only",
+    "PCI DSS",
+    "COBIT"
+  ],
+  answer: 0,
+  explain: "Frameworks guide capability development."
+},
+{
+  q: "SOC Scenario: Mean Time to Detect (MTTD) increased from 2 to 8 hours over 6 months. What does this indicate?",
+  choices: [
+    "Detection capabilities degrading or threats evolving",
+    "Improvement in security",
+    "No significance",
+    "Better logging"
+  ],
+  answer: 0,
+  explain: "Metrics analysis reveals security program health."
+},
+{
+  q: "SOC Scenario: You're investigating suspicious activity in your Kubernetes cluster. Which hunting technique would be MOST effective?",
+  choices: [
+    "Review container runtime logs and K8s audit logs for privilege escalation attempts",
+    "Only check traditional Windows Event Logs",
+    "Look for network scanning from the pod IP",
+    "Ignore containers as they're ephemeral"
+  ],
+  answer: 0,
+  explain: "Container environments require runtime and orchestration layer log analysis."
+},
+{
+  q: "SOC Scenario: An employee who gave notice is downloading large amounts of customer data. What UEBA pattern would flag this?",
+  choices: [
+    "Data access volume spike + proximity to termination date",
+    "Normal working hours access",
+    "Accessing job-related files",
+    "Using corporate credentials"
+  ],
+  answer: 0,
+  explain: "Behavioral anomalies + contextual risks reveal insider threats."
+},
+{
+  q: "SOC Scenario: You receive threat intel about new ransomware. What's your FIRST step to operationalize it?",
+  choices: [
+    "Extract IOCs, create detection rules, and identify vulnerable assets",
+    "Forward intel to management only",
+    "Archive for future reference",
+    "Share with all employees"
+  ],
+  answer: 0,
+  explain: "Intelligence must be rapidly turned into actionable defenses."
+},
+{
+  q: "SOC Scenario: Threat intel shows malicious domain from APT29. How do you proactively hunt?",
+  choices: [
+    "Search logs for domain, related IPs, and associated TLS certificates",
+    "Wait for alerts to trigger",
+    "Block the domain only",
+    "Assume no compromise"
+  ],
+  answer: 0,
+  explain: "Cross-source IOC searching supports proactive defense."
+},
+{
+  q: "SOC Scenario: Intelligence indicates APT41 targets your industry. What TTPs should you hunt for?",
+  choices: [
+    "Supply chain attacks and zero-day exploitation",
+    "Commodity ransomware only",
+    "Simple phishing only",
+    "DDoS attacks only"
+  ],
+  answer: 0,
+  explain: "Different threat actors = different hunting priorities."
+},
+{
+  q: "SOC Scenario: Malware using XOR encryption for C2. How do you identify traffic?",
+  choices: [
+    "Look for repeating byte patterns and entropy analysis",
+    "Search for standard encryption headers",
+    "Assume all encrypted traffic is malicious",
+    "Cannot detect custom encryption"
+  ],
+  answer: 0,
+  explain: "Custom encryption often shows repetitive XOR patterns."
+},
+{
+  q: "SOC Scenario: You see SSL traffic on port 8443 with suspicious certificate. Why is this notable?",
+  choices: [
+    "Common alternative to evade HTTPS monitoring",
+    "Always legitimate HTTPS port",
+    "Only for VPN",
+    "Default database port"
+  ],
+  answer: 0,
+  explain: "Attackers use alternate encrypted ports to bypass common inspection."
+},
+{
+  q: "SOC Scenario: WAF blocked a SQLi attempt. What should you examine to confirm real attack vs false positive?",
+  choices: [
+    "Payload content, source reputation, and attack pattern",
+    "Assume all blocks are attacks",
+    "Ignore WAF logs",
+    "Check only if app broke"
+  ],
+  answer: 0,
+  explain: "Reviewing evidence distinguishes threats from noise."
+},
+{
+  q: "SOC Scenario: You need to identify all devices in 10.10.50.0/24 subnet that may be compromised. Best approach?",
+  choices: [
+    "Use nmap with OS detection and correlate with CMDB",
+    "Manually check each IP",
+    "Assume all are compromised",
+    "Only check default gateway"
+  ],
+  answer: 0,
+  explain: "Scanning + asset inventory correlation gives accurate coverage."
+},
+{
+  q: "SOC Scenario: IPS blocks exploit. How do you verify target system vulnerability?",
+  choices: [
+    "Check patch status, service version, and whether exploit path was valid",
+    "Assume block means safe",
+    "Ignore alert",
+    "Patch everything immediately"
+  ],
+  answer: 0,
+  explain: "Control validation requires confirming whether exploit was truly possible."
+},
+{
+  q: "SOC Scenario: Traceroute shows attacker hops through bulletproof hosting. What does this indicate?",
+  choices: [
+    "Attacker hiding real origin through intermediate hops",
+    "Legitimate business routing",
+    "ISP compromise",
+    "Normal routing"
+  ],
+  answer: 0,
+  explain: "Network path analysis supports attribution."
+},
+{
+  q: "SOC Scenario: You must correlate firewall, proxy, and auth logs. What capability is essential?",
+  choices: [
+    "Time synchronization and common pivot fields",
+    "Separate analysis of each log",
+    "Manual spreadsheet correlation",
+    "No correlation needed"
+  ],
+  answer: 0,
+  explain: "Correlation depends on normalization across data sources."
+},
+{
+  q: "SOC Scenario: You find Cobalt Strike beacons. What other tools likely exist?",
+  choices: [
+    "Mimikatz, BloodHound, and PowerShell Empire",
+    "Standalone malware only",
+    "DDoS tools",
+    "Cryptominers"
+  ],
+  answer: 0,
+  explain: "Intrusion sets rarely operate alone — expect full toolchain."
+},
+{
+  q: "SOC Scenario: After breach, you need to map attacker movement. What logs matter most?",
+  choices: [
+    "Firewall logs, authentication logs, and NetFlow",
+    "Only endpoint logs",
+    "Only application logs",
+    "Guess from IPs"
+  ],
+  answer: 0,
+  explain: "Movement requires identity + traffic insight."
+},
+{
+  q: "SOC Scenario: Traceroute to malicious IP shows hops through Russia then NL then your network. Likely?",
+  choices: [
+    "Proxy/VPN chain evasion",
+    "Direct attack from Russia",
+    "Routing misconfiguration",
+    "Normal routing"
+  ],
+  answer: 0,
+  explain: "Geographic anomalies indicate infrastructure for hiding origin."
+},
+{
+  q: "SOC Scenario: You discover RSA private key on ransomware-infected system. What do you do?",
+  choices: [
+    "Verify and test if it decrypts — could be decoy",
+    "Delete key immediately",
+    "Use on all encrypted systems",
+    "Ignore — always fake"
+  ],
+  answer: 0,
+  explain: "Cryptographic artifacts must be validated before use."
+},
+{
+  q: "SOC Scenario: You find invoice.pdf.exe. Concern?",
+  choices: [
+    "Double extension hides executable",
+    "Normal PDF",
+    "Corrupted file",
+    "Email attachment error"
+  ],
+  answer: 0,
+  explain: "Attackers disguise malicious executables with double extensions."
+},
+{
+  q: "SOC Scenario: Triage Linux compromise quickly. Which commands help most?",
+  choices: [
+    "ps auxf; netstat -tulpn; lsof -i; history",
+    "ls -la only",
+    "Reboot",
+    "rm -rf /"
+  ],
+  answer: 0,
+  explain: "System triage requires network, process, and command context."
+},
+{
+  q: "SOC Scenario: After cleaning malware, what should be checked FIRST for hardening?",
+  choices: [
+    "Unpatched vulnerabilities that enabled compromise",
+    "Only remove malware",
+    "Reinstall everything",
+    "No hardening needed"
+  ],
+  answer: 0,
+  explain: "Fix root cause to prevent re-infection."
+},
+{
+  q: "SOC Scenario: Compromised IoT device suspected. First safe step?",
+  choices: [
+    "Extract firmware and analyze offline",
+    "Physically disassemble immediately",
+    "Connect to production network",
+    "Discard"
+  ],
+  answer: 0,
+  explain: "Preserve hardware integrity while investigating."
+},
+{
+  q: "SOC Scenario: Malware has packed/obfuscated code. Next step?",
+  choices: [
+    "Unpack and analyze clean version",
+    "Analyze obfuscated code directly",
+    "Give up",
+    "Assume benign"
+  ],
+  answer: 0,
+  explain: "De-obfuscation required for meaningful RE."
+},
+{
+  q: "SOC Scenario: Malware uses AES but key found in memory — why?",
+  choices: [
+    "Poor implementation left key accessible",
+    "AES is broken",
+    "Pure luck",
+    "All malware does this"
+  ],
+  answer: 0,
+  explain: "Memory key exposure is common exploitation flaw."
+},
+{
+  q: "SOC Scenario: ICS device behaves oddly. Safe investigation?",
+  choices: [
+    "Network capture + offline firmware analysis",
+    "Restart device immediately",
+    "Connect to corporate IT network",
+    "Ignore"
+  ],
+  answer: 0,
+  explain: "ICS requires non-disruptive investigation methods."
+},
+{
+  q: "SOC Scenario: YARA rule detects 'AutoOpen'. What does it detect?",
+  choices: [
+    "Macro-enabled documents with auto-execution",
+    "All Word docs",
+    "PDF files",
+    "Excel only"
+  ],
+  answer: 0,
+  explain: "AutoOpen macro triggers malicious execution."
+},
+{
+  q: "SOC Scenario: Evaluate if MFA would have prevented breach. What do you check?",
+  choices: [
+    "If stolen credentials were used",
+    "Assume MFA always helps",
+    "Only password strength",
+    "Ignore now"
+  ],
+  answer: 0,
+  explain: "Control effectiveness depends on attack path."
+},
+{
+  q: "SOC Scenario: 10GB of logs from breach. Analysis approach?",
+  choices: [
+    "Time filtering → IOC matching → anomaly detection",
+    "Read every line manually",
+    "Search malware names only",
+    "Logs are useless"
+  ],
+  answer: 0,
+  explain: "Structured analysis scales with large datasets."
+},
+{
+  q: "SOC Scenario: Timeline has conflicting timestamps. How resolve?",
+  choices: [
+    "Normalize to UTC and align with external sources",
+    "Use earliest timestamp",
+    "Use latest timestamp",
+    "Ignore timestamps"
+  ],
+  answer: 0,
+  explain: "Unified time baselines are critical for accurate timelines."
+},
+{
+  q: "SOC Scenario: NetFlow shows internal → external → internal. What might this indicate?",
+  choices: [
+    "Lateral movement or staging",
+    "Normal backup",
+    "Email only",
+    "Browsing"
+  ],
+  answer: 0,
+  explain: "Traffic bounce patterns reveal lateral movement."
+},
+{
+  q: "SOC Scenario: PCAP shows TCP retransmissions + window changes. What might this indicate?",
+  choices: [
+    "Network issues or evasion",
+    "Normal ALWAYS",
+    "Guaranteed attack",
+    "Encryption error"
+  ],
+  answer: 0,
+  explain: "TCP anomalies may indicate stealth techniques."
+},
+{
+  q: "SOC Scenario: Event ID 4688 shows PowerShell spawned by svchost. Why suspicious?",
+  choices: [
+    "Services should not spawn PowerShell",
+    "Normal Windows activity",
+    "Antivirus scan",
+    "Windows update"
+  ],
+  answer: 0,
+  explain: "Process lineage indicates living-off-the-land behavior."
+},
+{
+  q: "SOC Scenario: Expanding to cloud. What architecture principle reduces breach impact?",
+  choices: [
+    "Zero Trust segmentation",
+    "Flat network",
+    "Same as on-prem defaults",
+    "Trust provider completely"
+  ],
+  answer: 0,
+  explain: "Segmentation reduces lateral movement."
+},
+{
+  q: "SOC Scenario: Need to understand data flows fast. Best diagram?",
+  choices: [
+    "Data flow diagram with trust boundaries",
+    "Org chart",
+    "Network topology only",
+    "App architecture only"
+  ],
+  answer: 0,
+  explain: "Data flow visibility is critical in IR."
+},
+{
+  q: "SOC Scenario: Recommend post-incident improvements. What ensures implementation?",
+  choices: [
+    "Integrate into SDLC + change management",
+    "Email suggestions",
+    "Hope developers notice",
+    "Manual enforcement"
+  ],
+  answer: 0,
+  explain: "Systems engineering drives sustainability."
+},
+{
+  q: "SOC Scenario: Assess security across people, process, and tech. Which framework helps?",
+  choices: [
+    "NIST CSF or SABSA",
+    "Tech tools only",
+    "Compliance checklists",
+    "Vendor marketing"
+  ],
+  answer: 0,
+  explain: "Reference models provide holistic assessment."
+},
+{
+  q: "SOC Scenario: SOC tools don’t integrate. What principle fixes this?",
+  choices: [
+    "Integration and interoperability",
+    "Buy more tools",
+    "Hire more analysts",
+    "Ignore alerts"
+  ],
+  answer: 0,
+  explain: "Architecture must support data sharing."
+},
+{
+  q: "SOC Scenario: Security vs usability conflict. How to balance?",
+  choices: [
+    "Risk-based approach with stakeholder involvement",
+    "Always security first",
+    "Always usability",
+    "Flip coin"
+  ],
+  answer: 0,
+  explain: "Risk-based tradeoffs enable balance."
+},
+{
+  q: "SOC Scenario: Attackers bypass IDS via encryption. What complementary control?",
+  choices: [
+    "Network behavior analysis + TLS fingerprinting",
+    "More IDS rules",
+    "Block all encryption",
+    "Nothing helps"
+  ],
+  answer: 0,
+  explain: "Defense-in-depth fills detection gaps."
+},
+{
+  q: "SOC Scenario: Need current network map for hunting. Best source?",
+  choices: [
+    "Automated discovery + CMDB",
+    "Last year’s diagram",
+    "Ask network team",
+    "Guess"
+  ],
+  answer: 0,
+  explain: "Multiple validated sources = accuracy."
+},
+{
+  q: "SOC Scenario: East-west traffic spike. What design could contain?",
+  choices: [
+    "Microsegmentation",
+    "Larger subnets",
+    "No internal firewalls",
+    "Flat network"
+  ],
+  answer: 0,
+  explain: "Segmentation limits lateral movement."
+},
+{
+  q: "SOC Scenario: VoIP and SCADA can't be inspected by standard IDS. Best alternative?",
+  choices: [
+    "Protocol-specific monitoring and anomaly detection",
+    "Allow all",
+    "Block all",
+    "Ignore"
+  ],
+  answer: 0,
+  explain: "Specialized traffic requires specialized controls."
+},
+{
+  q: "SOC Scenario: Passwords reversibly encrypted. Evaluation?",
+  choices: [
+    "Security flaw — use salted hashing",
+    "Strong encryption OK",
+    "Better than plaintext",
+    "Industry standard"
+  ],
+  answer: 0,
+  explain: "Passwords must not be decryptable."
+},
+{
+  q: "SOC Scenario: New phishing technique. Best detection process?",
+  choices: [
+    "Analyze samples, create IOCs, deploy globally",
+    "Wait for vendor",
+    "Manual review only",
+    "Block all email"
+  ],
+  answer: 0,
+  explain: "Internal content development extends detections."
+},
+{
+  q: "SOC Scenario: More PowerShell attacks. Most valuable trend analysis?",
+  choices: [
+    "Correlate with patch levels and user training",
+    "Count only",
+    "Compare to industry average",
+    "No analysis"
+  ],
+  answer: 0,
+  explain: "Trends must lead to actionable changes."
+},
+{
+  q: "SOC Scenario: Log4j vulnerability in legacy system. Best recommendation?",
+  choices: [
+    "Network isolation + application-layer controls",
+    "Use as-is",
+    "Immediate shutdown",
+    "Hide from scanners"
+  ],
+  answer: 0,
+  explain: "Contain risk when patching isn't possible."
+},
+{
+  q: "SOC Scenario: New EDR installed but alerts ignored. Effectiveness?",
+  choices: [
+    "Measure MTTD/MTTR and alert relevance",
+    "Installed so effective",
+    "Vendor rating",
+    "Ask users"
+  ],
+  answer: 0,
+  explain: "Effectiveness = measurable improvements."
+},
+{
+  q: "SOC Scenario: Breach impacts EU data. GDPR notification timeline?",
+  choices: [
+    "Within 72 hours of awareness",
+    "30 days",
+    "When convenient",
+    "Only if asked"
+  ],
+  answer: 0,
+  explain: "GDPR enforces strict timing for breach notifications."
+},
+{
+  q: "SOC Scenario: Customer requests their personal data. What law applies?",
+  choices: [
+    "GDPR Right of Access / CCPA",
+    "HIPAA only",
+    "No law",
+    "Internal policy only"
+  ],
+  answer: 0,
+  explain: "Privacy regulations grant access rights."
+},
+{
+  q: "SOC Scenario: You find PII in unexpected location. What guides handling?",
+  choices: [
+    "Data classification and handling policy",
+    "Ignore to focus on threat",
+    "Delete immediately",
+    "Share widely"
+  ],
+  answer: 0,
+  explain: "Policies dictate PII handling requirements."
+},
+{
+  q: "SOC Scenario: Evidence contains PII. What conflict occurs?",
+  choices: [
+    "Data minimization vs evidence preservation",
+    "No conflict",
+    "Transparency",
+    "Accountability"
+  ],
+  answer: 0,
+  explain: "Investigations must balance privacy and evidence needs."
+},
+{
+  q: "SOC Scenario: Analyst exposed to disturbing content. Required support?",
+  choices: [
+    "Mental health resources and supervisory support",
+    "Ignore",
+    "Mandatory exposure",
+    "No special handling"
+  ],
+  answer: 0,
+  explain: "Cyber safety includes analyst wellbeing."
+},
+{
+  q: "SOC Scenario: Suspected insider data theft. Legal consideration?",
+  choices: [
+    "ECPA and signed monitoring policy",
+    "No limits on monitoring",
+    "Total surveillance allowed",
+    "Cannot monitor employees"
+  ],
+  answer: 0,
+  explain: "Legal and policy boundaries must be respected."
+},
+{
+  q: "SOC Scenario: Considering hacking back. Legal constraint?",
+  choices: [
+    "Computer Fraud and Abuse Act (CFAA)",
+    "No laws apply",
+    "Only international laws",
+    "Depends on attacker location"
+  ],
+  answer: 0,
+  explain: "Hacking back is illegal in most cases."
+},
+{
+  q: "SOC Scenario: Identified attacker in country X. What law governs information sharing?",
+  choices: [
+    "Executive Order 12333 and international agreements",
+    "No restrictions",
+    "Share freely",
+    "Not allowed internationally"
+  ],
+  answer: 0,
+  explain: "Intel use and sharing is legally regulated."
+},
+{
+  q: "SOC Scenario: Vulnerability found in vendor software. Proper disclosure?",
+  choices: [
+    "Coordinated Vulnerability Disclosure (CVD) process",
+    "Public disclosure immediately",
+    "Sell to highest bidder",
+    "Ignore"
+  ],
+  answer: 0,
+  explain: "CVD ensures safe remediation before public exposure."
+},
+{
+  q: "SOC Scenario: Ransomware hits manufacturing plant. What business impact to communicate?",
+  choices: [
+    "Production downtime and delayed orders",
+    "Encrypted file count",
+    "Technical details only",
+    "Only IT system status"
+  ],
+  answer: 0,
+  explain: "Business leaders need operational impact context."
+},
+{
+  q: "SOC Scenario: Daily SOC report to executives. What emphasize?",
+  choices: [
+    "Business risks and trends",
+    "Every alert detail",
+    "Technical jargon only",
+    "Only good news"
+  ],
+  answer: 0,
+  explain: "Executive audience requires risk-aligned summary."
+},
+{
+  q: "SOC Scenario: Active breach. First communication after containment?",
+  choices: [
+    "Confirm incident, known scope, containment in progress",
+    "All details immediately",
+    "Wait for full analysis",
+    "No communication"
+  ],
+  answer: 0,
+  explain: "Early, accurate communication maintains trust."
+},
+{
+  q: "SOC Scenario: Quarterly report to board. Key metrics?",
+  choices: [
+    "Risk reduction and business alignment",
+    "Number of blocked attacks",
+    "Tool statistics",
+    "Training completion only"
+  ],
+  answer: 0,
+  explain: "Board requires outcomes, not raw numbers."
+},
+{
+  q: "SOC Scenario: Excess privileges found. How communicate risk?",
+  choices: [
+    "Business impact if misused",
+    "Technical details only",
+    "Compliance violations only",
+    "Assume they understand"
+  ],
+  answer: 0,
+  explain: "Risk must be explained in business terms."
+},
+{
+  q: "SOC Scenario: Critical system can't meet PCI. Advice?",
+  choices: [
+    "Risk acceptance with compensating controls",
+    "Ignore requirement",
+    "Shutdown system",
+    "Falsify compliance"
+  ],
+  answer: 0,
+  explain: "Compliance requires realistic balancing of business and risk."
+},
+{
+  q: "SOC Scenario: Python-based dropper uses exec(base64 decode). What is attacker doing?",
+  choices: [
+    "Executing encoded payload — look for exec/eval indicators",
+    "Encrypting files",
+    "Network scanning",
+    "Password cracking"
+  ],
+  answer: 0,
+  explain: "Encoded payload execution is a common evasion technique."
+},
+{
+  q: "SOC Scenario: ML model flags normal backups as anomalies. Why?",
+  choices: [
+    "Algorithm needs tuning for baseline traffic",
+    "Backup is malicious",
+    "Algorithm broken",
+    "ML works perfectly by default"
+  ],
+  answer: 0,
+  explain: "ML requires environmental learning and tuning."
+},
+{
+  q: "SOC Scenario: DNS used for UDP amplification in DDoS. Why DNS effective?",
+  choices: [
+    "Small queries produce large responses",
+    "DNS has no limits",
+    "DNS uses TCP",
+    "DNS responses always encrypted"
+  ],
+  answer: 0,
+  explain: "Amplification ratio makes DNS a powerful DDoS vector."
+},
+{
+  q: "SOC Scenario: Zero-day announced. Fastest actionable source?",
+  choices: [
+    "CVE/NVD + vendor advisories",
+    "Social media only",
+    "Wait for full reports",
+    "Guess"
+  ],
+  answer: 0,
+  explain: "Vendor and NVD provide verified technical details quickly."
+},
+{
+  q: "SOC Scenario: Need to isolate endpoint while preserving memory. Best tools?",
+  choices: [
+    "EDR quarantine + memory capture",
+    "Power off system",
+    "Unplug network only",
+    "Reimage immediately"
+  ],
+  answer: 0,
+  explain: "Isolation + forensic preservation is required for IR."
+},
+{
+  q: "SOC Scenario: Employee denies sending sensitive email. What proves they did?",
+  choices: [
+    "Digital signature + server logs",
+    "Username in logs",
+    "IP address only",
+    "Recipient testimony"
+  ],
+  answer: 0,
+  explain: "Non-repudiation requires cryptographic evidence."
+},
+{
+  q: "SOC Scenario: IDS missing encrypted C2 traffic. Complementary method?",
+  choices: [
+    "Endpoint telemetry + JA3/S fingerprinting",
+    "More IDS rules",
+    "Block encrypted traffic",
+    "Nothing detects encrypted C2"
+  ],
+  answer: 0,
+  explain: "Encrypted traffic analysis must focus on behavior and JA3 signatures."
+},
+{
+  q: "SOC Scenario: Critical system can't run AV. Best compensating control?",
+  choices: [
+    "Application whitelisting + segmentation",
+    "Hope",
+    "Install anyway",
+    "No controls"
+  ],
+  answer: 0,
+  explain: "Whitelisting prevents unauthorized execution."
+},
+{
+  q: "SOC Scenario: Log4Shell exploited. Why so dangerous?",
+  choices: [
+    "RCE via log messages affecting many systems",
+    "Only local issue",
+    "Info disclosure only",
+    "Windows only"
+  ],
+  answer: 0,
+  explain: "Log4Shell had massive reach and easy exploitation."
+},
+{
+  q: "SOC Scenario: Need attack path documentation. Best diagram?",
+  choices: [
+    "Attack trees or DFDs with trust boundaries",
+    "Network topology only",
+    "Org chart",
+    "Gantt chart"
+  ],
+  answer: 0,
+  explain: "Threat modeling diagrams reveal attack opportunities."
+},
+{
+  q: "SOC Scenario: SIP vulnerability in VoIP. Why hard to detect?",
+  choices: [
+    "Specialized protocol requiring custom rules",
+    "All IDS detect VoIP",
+    "VoIP unattackable",
+    "HTTP rules apply"
+  ],
+  answer: 0,
+  explain: "VoIP protocols need protocol-aware detection."
+},
+{
+  q: "SOC Scenario: East-west spike. What network config limits spread?",
+  choices: [
+    "VLAN segmentation + internal firewalls",
+    "Flat network",
+    "No internal segmentation",
+    "Large broadcast domains"
+  ],
+  answer: 0,
+  explain: "Segmentation limits lateral movement."
+},
+{
+  q: "SOC Scenario: C2 using Slack API. How detect?",
+  choices: [
+    "Monitor unusual API use",
+    "Block Slack",
+    "Impossible to detect",
+    "Email only"
+  ],
+  answer: 0,
+  explain: "Cloud-based C2 requires application-aware monitoring."
+},
+{
+  q: "SOC Scenario: Urgent ACL changes on multiple firewalls. Ensure no mistakes?",
+  choices: [
+    "Change control + peer review + rollback plan",
+    "Change directly",
+    "Wait for maintenance",
+    "Ask attacker to wait"
+  ],
+  answer: 0,
+  explain: "Change control prevents outages during response."
+},
+{
+  q: "SOC Scenario: Push urgent ACL updates to many firewalls. What tool?",
+  choices: [
+    "Network automation/orchestrator",
+    "Manual config each",
+    "Just primary only",
+    "Email team"
+  ],
+  answer: 0,
+  explain: "Automation ensures consistency and speed."
+},
+{
+  q: "SOC Scenario: Evaluate new EDR. Best SOC efficiency metric?",
+  choices: [
+    "MTTD and false-positive rate",
+    "Vendor claims",
+    "More features",
+    "Cost only"
+  ],
+  answer: 0,
+  explain: "Better detection + fewer false positives = strong SOC impact."
+},
+{
+  q: "SOC Scenario: Scan medical system. Critical step before scanning?",
+  choices: [
+    "Authorization + maintenance window",
+    "Scan peak hours",
+    "No prep",
+    "Scan from internet"
+  ],
+  answer: 0,
+  explain: "Scanning must not disrupt critical healthcare operations."
+},
+{
+  q: "SOC Scenario: New Suricata rule. Low-risk deployment?",
+  choices: [
+    "Test → Monitor-only → Blocking",
+    "Deploy instantly",
+    "Never deploy",
+    "Email rule"
+  ],
+  answer: 0,
+  explain: "Change safety depends on controlled rollout."
+},
+{
+  q: "SOC Scenario: Prevent ransomware reoccurrence. Best control?",
+  choices: [
+    "App whitelisting + restricted PowerShell",
+    "Better antivirus",
+    "User training only",
+    "More firewall rules"
+  ],
+  answer: 0,
+  explain: "Modern ransomware mitigations target execution paths."
+},
+{
+  q: "SOC Scenario: Insider threat investigation. Relevant data?",
+  choices: [
+    "Access logs + file activity + UEBA",
+    "Network only",
+    "Just HR",
+    "Social media"
+  ],
+  answer: 0,
+  explain: "Insider activity correlates access + abnormal behavior."
+},
+{
+  q: "SOC Scenario: PrintNightmare discovered. Categorization?",
+  choices: [
+    "Critical - RCE/LPE",
+    "Medium - DoS",
+    "Low",
+    "Informational"
+  ],
+  answer: 0,
+  explain: "PrintNightmare provided remote code execution and privilege escalation."
+},
+{
+  q: "SOC Scenario: NetFlow shows large uploads to external cloud. Investigation?",
+  choices: [
+    "Confirm authorized backup + check data + logs",
+    "Block immediately",
+    "Assume legit",
+    "Ignore cloud traffic"
+  ],
+  answer: 0,
+  explain: "Cloud exfil often disguised as remote backup."
+},
+{
+  q: "SOC Scenario: Reconstruct breach network path. Approach?",
+  choices: [
+    "Map from initial access → lateral movement → exfil",
+    "Focus on entry only",
+    "Only look at malware",
+    "Assume simple"
+  ],
+  answer: 0,
+  explain: "Attackers often take multi-stage lateral paths."
+},
+{
+  q: "SOC Scenario: MSSP alerts suspicious activity. How validate?",
+  choices: [
+    "Correlate with internal logs + request evidence",
+    "Trust blindly",
+    "Ignore",
+    "Block everything"
+  ],
+  answer: 0,
+  explain: "External alerts need local validation."
+},
+{
+  q: "SOC Scenario: Compromised via unpatched vulnerability. Root cause?",
+  choices: [
+    "Missing patch + weak vuln management",
+    "Bad luck",
+    "User only",
+    "Network misconfig"
+  ],
+  answer: 0,
+  explain: "Vulnerability exploitation results from patching gaps."
+},
+{
+  q: "SOC Scenario: What baseline matters most for monitoring?",
+  choices: [
+    "Understanding normal behavior",
+    "Industry benchmarks only",
+    "Vendor defaults",
+    "No baseline"
+  ],
+  answer: 0,
+  explain: "Baseline enables anomaly detection."
+},
+{
+  q: "SOC Scenario: Phishing success rises quarterly. Most actionable analysis?",
+  choices: [
+    "Correlate with training + campaign changes",
+    "Just numbers",
+    "Compare only yearly",
+    "Ignore"
+  ],
+  answer: 0,
+  explain: "Trends must drive improvements."
+},
+{
+  q: "SOC Scenario: Sequential port scans from single IP suggest?",
+  choices: [
+    "Low-and-slow reconnaissance across specific services",
+    "Single port check",
+    "Known scanner",
+    "All scans malicious"
+  ],
+  answer: 0,
+  explain: "Reconnaissance is targeted and quiet."
+},
+{
+  q: "SOC Scenario: Evaluate MSSP performance. Best metric?",
+  choices: [
+    "Detection quality + response speed",
+    "Alert count",
+    "Cost per alert",
+    "Brand recognition"
+  ],
+  answer: 0,
+  explain: "Outcomes matter, not volume."
+},
+{
+  q: "SOC Scenario: New ransomware targets your vertical. Process?",
+  choices: [
+    "Analyze TTPs + assess exposure + remediate",
+    "Wait",
+    "AV update only",
+    "Assume irrelevant"
+  ],
+  answer: 0,
+  explain: "Proactive threat mapping reduces risk."
+},
+{
+  q: "SOC Scenario: IDS SQLi alert. How validate?",
+  choices: [
+    "Review web logs for payload + check behavior",
+    "Assume correct",
+    "Ignore SQL",
+    "Block IP only"
+  ],
+  answer: 0,
+  explain: "Validation prevents false responses."
+},
+{
+  q: "SOC Scenario: New SIEM deployed. Effectiveness metric?",
+  choices: [
+    "MTTD improvement + alert fatigue reduction",
+    "Rule count",
+    "Vendor promises",
+    "Opinions"
+  ],
+  answer: 0,
+  explain: "Better SOC performance = effectiveness."
+},
+{
+  q: "SOC Scenario: MFA implemented. How measure impact?",
+  choices: [
+    "Reduced credential-based incidents",
+    "User complaints",
+    "Cost",
+    "Assume it works"
+  ],
+  answer: 0,
+  explain: "Outcome metrics demonstrate value."
+},
+{
+  q: "SOC Scenario: Phishing detected. Assess success?",
+  choices: [
+    "Check credential use + malware execution + access",
+    "Email clicks only",
+    "User reports only",
+    "Impossible to know"
+  ],
+  answer: 0,
+  explain: "Impact assessment reveals success or failure."
+},
+{
+  q: "SOC Scenario: Critical vuln in legacy system. Mitigation?",
+  choices: [
+    "Compensating controls + replacement plan",
+    "Shutdown",
+    "Ignore risk",
+    "Hope"
+  ],
+  answer: 0,
+  explain: "Legacy risk needs layered defenses."
+},
+{
+  q: "SOC Scenario: Default credentials found on IoT. Needed change?",
+  choices: [
+    "Password enforcement + segmentation",
+    "Remove IoT",
+    "No change",
+    "Document only"
+  ],
+  answer: 0,
+  explain: "Default credentials are high-risk attack surface."
+},
+{
+  q: "SOC Scenario: New APT identified. Procedures?",
+  choices: [
+    "Hunting playbooks + detection + response",
+    "Just monitor",
+    "Block their country",
+    "Nothing special"
+  ],
+  answer: 0,
+  explain: "Mature SOCs operationalize new intel."
+},
+{
+  q: "SOC Scenario: Malware persistence found. Removal?",
+  choices: [
+    "Remove artifacts + persistence + verify clean",
+    "Delete main file only",
+    "Reimage",
+    "Just quarantine"
+  ],
+  answer: 0,
+  explain: "Persistence removal is critical to ensure eradication."
+},
+{
+  q: "SOC Scenario: Unknown network device. Identification?",
+  choices: [
+    "MAC lookup + scan + traffic analysis",
+    "Ignore",
+    "Block immediately",
+    "Assume legit"
+  ],
+  answer: 0,
+  explain: "Multifactor identification avoids disruption."
+},
+{
+  q: "SOC Scenario: Monthly security posture report. What matters?",
+  choices: [
+    "Patch compliance + vuln count + incident trends",
+    "Uptime only",
+    "User satisfaction",
+    "Cost savings only"
+  ],
+  answer: 0,
+  explain: "Security posture requires actionable metrics."
+},
+{
+  q: "SOC Scenario: New threat emerges. Maintenance?",
+  choices: [
+    "Update IOCs + adjust detection + notify",
+    "Wait for vendor",
+    "Document only",
+    "No change"
+  ],
+  answer: 0,
+  explain: "Threat conditions evolve rapidly — response must too."
+},
+{
+  q: "SOC Scenario: Incident resolved. Final step?",
+  choices: [
+    "Lessons learned + update procedures + close ticket",
+    "Forget",
+    "Blame someone",
+    "Archive logs only"
+  ],
+  answer: 0,
+  explain: "Lessons learned prevents recurrence."
+}
+
+
 ];
 
-let currentIndex=0,score=0,correct=0,wrong=0,selected=null,timerSeconds=TIME_LIMIT,timerInterval=null,total=QUESTIONS.length;
+let currentIndex = 0,
+    score = 0,
+    correct = 0,
+    wrong = 0,
+    selected = null,
+    timerSeconds = TIME_LIMIT,
+    timerInterval = null,
+    total = QUESTIONS.length,
+    answers = new Array(QUESTIONS.length).fill(null); // per-question answers
 
 // --- State Management Functions ---
 
-/**
- * Saves the current essential quiz state to sessionStorage.
- */
 function saveState() {
     const state = {
-        currentIndex: currentIndex,
-        score: score,
-        correct: correct,
-        wrong: wrong,
-        timerSeconds: timerSeconds,
-        // We only save the index, the question state is loaded on render
+        currentIndex,
+        score,
+        correct,
+        wrong,
+        timerSeconds,
+        answers
     };
     sessionStorage.setItem('quizState', JSON.stringify(state));
 }
 
-/**
- * Loads the quiz state from sessionStorage if it exists.
- * @returns {boolean} True if state was loaded, false otherwise.
- */
 function loadState() {
     const savedState = sessionStorage.getItem('quizState');
     if (savedState) {
         const state = JSON.parse(savedState);
-        currentIndex = state.currentIndex;
-        score = state.score;
-        correct = state.correct;
-        wrong = state.wrong;
-        timerSeconds = state.timerSeconds;
+        currentIndex   = state.currentIndex;
+        score          = state.score;
+        correct        = state.correct;
+        wrong          = state.wrong;
+        timerSeconds   = state.timerSeconds;
+        answers        = state.answers || new Array(QUESTIONS.length).fill(null);
         return true;
     }
     return false;
 }
 
-/**
- * Clears the quiz state from sessionStorage (used when quiz finishes).
- */
 function clearState() {
     sessionStorage.removeItem('quizState');
 }
@@ -178,16 +1793,16 @@ function clearState() {
 // --- Quiz Logic ---
 function init() {
   if (loadState()) {
-      // If state loaded, we start the timer and render the current question
       console.log("State loaded. Resuming quiz.");
       document.getElementById('qTotal').textContent = total;
       renderQuestion(); 
       renderMap(); 
       startTimer();
   } else {
-      // If no state loaded, start quiz fresh
       console.log("No state found. Starting new quiz.");
       QUESTIONS.sort(()=>0.5 - Math.random());
+      total = QUESTIONS.length;
+      answers = new Array(total).fill(null);
       document.getElementById('qTotal').textContent = total;
       resetState(); 
       renderQuestion(); 
@@ -197,132 +1812,199 @@ function init() {
 }
 
 function resetState() {
-  currentIndex=0; score=0; correct=0; wrong=0; selected=null;
-  timerSeconds=TIME_LIMIT; // Reset timer for a fresh start
-  document.getElementById('endBlock').style.display='none';
-  document.getElementById('questionCard').style.display='block';
-  clearState(); // Clear any residual state when starting fresh
+  currentIndex = 0;
+  score        = 0;
+  correct      = 0;
+  wrong        = 0;
+  selected     = null;
+  timerSeconds = TIME_LIMIT;
+  answers      = new Array(QUESTIONS.length).fill(null);
+
+  document.getElementById('endBlock').style.display = 'none';
+  document.getElementById('questionCard').style.display = 'block';
+  clearState();
 }
 
 function startTimer() {
   updateTimeDisplay();
-  timerInterval=setInterval(()=>{
+  timerInterval = setInterval(()=>{
     timerSeconds--;
-    if(timerSeconds<=0){ clearInterval(timerInterval); endQuiz(); return; }
+    if (timerSeconds <= 0) { 
+      clearInterval(timerInterval); 
+      endQuiz(); 
+      return; 
+    }
     updateTimeDisplay(); 
     updateProgress();
-    saveState(); // Save state every second to keep the timer updated
-  },1000);
+    saveState();
+  }, 1000);
 }
 
 function updateTimeDisplay() {
-  const mm=Math.floor(timerSeconds/60).toString().padStart(2,'0');
-  const ss=(timerSeconds%60).toString().padStart(2,'0');
-  document.getElementById('timeLeft').textContent=`${mm}:${ss}`;
+  const mm = Math.floor(timerSeconds/60).toString().padStart(2,'0');
+  const ss = (timerSeconds%60).toString().padStart(2,'0');
+  document.getElementById('timeLeft').textContent = `${mm}:${ss}`;
 }
 
 function updateProgress() {
-  const pct=((TIME_LIMIT - timerSeconds)/TIME_LIMIT)*100;
-  document.getElementById('timeProgress').style.width=pct+'%';
+  const pct = ((TIME_LIMIT - timerSeconds)/TIME_LIMIT)*100;
+  document.getElementById('timeProgress').style.width = pct + '%';
 }
 
 function renderMap() {
-  const map=document.getElementById('map'); map.innerHTML='';
-  for(let i=0;i<total;i++){
-    const b=document.createElement('div');
-    b.textContent=i+1; b.style.width='34px'; b.style.height='34px'; b.style.borderRadius='8px';
-    b.style.display='flex'; b.style.alignItems='center'; b.style.justifyContent='center';
-    b.style.background='rgba(255,255,255,0.02)'; b.style.fontSize='13px'; b.style.cursor='pointer';
-    b.dataset.idx=i; b.addEventListener('click',()=>{jumpTo(i);});
+  const map = document.getElementById('map'); 
+  map.innerHTML = '';
+  for (let i=0; i<total; i++){
+    const b = document.createElement('div');
+    b.textContent = i+1;
+    b.style.width = '34px';
+    b.style.height = '34px';
+    b.style.borderRadius = '8px';
+    b.style.display = 'flex';
+    b.style.alignItems = 'center';
+    b.style.justifyContent = 'center';
+    b.style.background = 'rgba(255,255,255,0.02)';
+    b.style.fontSize = '13px';
+    b.style.cursor = 'pointer';
+    b.dataset.idx = i;
+    b.addEventListener('click', ()=>{ jumpTo(i); });
     map.appendChild(b);
-  } highlightMap();
+  }
+  highlightMap();
 }
 
 function highlightMap() {
-  const map=document.getElementById('map').children;
-  for(let i=0;i<map.length;i++){
-    map[i].style.opacity=i===currentIndex?'1':'0.6';
-    map[i].style.border=i===currentIndex?'2px solid rgba(0,180,216,0.18)':'none';
+  const map = document.getElementById('map').children;
+  for (let i=0; i<map.length; i++){
+    map[i].style.opacity = i === currentIndex ? '1' : '0.6';
+    map[i].style.border  = i === currentIndex ? '2px solid rgba(0,180,216,0.18)' : 'none';
   }
 }
 
 function renderQuestion() {
-  const qObj=QUESTIONS[currentIndex];
-  document.getElementById('qText').textContent=qObj.q;
-  const choices=document.getElementById('choices'); choices.innerHTML='';
-  qObj.choices.forEach((c,i)=>{
-    const div=document.createElement('div'); div.textContent=c; div.className='choice';
-    div.addEventListener('click',()=>selectAnswer(i));
-    choices.appendChild(div);
+  const qObj = QUESTIONS[currentIndex];
+  document.getElementById('qText').textContent = qObj.q;
+
+  const choicesContainer = document.getElementById('choices'); 
+  choicesContainer.innerHTML = '';
+
+  selected = answers[currentIndex]; // restore saved selection for this question
+
+  qObj.choices.forEach((c, i)=>{
+    const div = document.createElement('div'); 
+    div.textContent = c; 
+    div.className = 'choice';
+    if (selected === i) {
+      div.classList.add('selected'); // highlight previously selected
+    }
+    div.addEventListener('click', ()=>selectAnswer(i));
+    choicesContainer.appendChild(div);
   });
-  document.getElementById('qIndex').textContent=currentIndex+1;
-  selected=null; highlightMap();
+
+  document.getElementById('qIndex').textContent = currentIndex + 1;
+  highlightMap();
 }
 
+// Select / change answer for current question
 function selectAnswer(idx){
-  if(selected!==null) return; 
-  
-  selected=idx; 
-  const qObj=QUESTIONS[currentIndex];
-  const choices=document.getElementById('choices').children;
-  
-  // 1. Update Score (Backend only)
-  if(idx===qObj.answer){
-    score+=10; 
+  const qObj  = QUESTIONS[currentIndex];
+  const choices = document.getElementById('choices').children;
+
+  const previous = answers[currentIndex];
+
+  // Undo previous effect on score if existed
+  if (previous !== null) {
+    if (previous === qObj.answer) {
+      score  -= 10;
+      correct--;
+    } else {
+      wrong--;
+    }
+  }
+
+  // Apply new answer
+  answers[currentIndex] = idx;
+  selected = idx;
+  if (idx === qObj.answer) {
+    score  += 10;
     correct++;
   } else {
     wrong++;
   }
-  
-  // 2. Update Visuals
-  for(let i=0;i<choices.length;i++){
-    if(i===idx) {
-        // Apply blue outline to the selected answer (correct or wrong)
-        choices[i].classList.add('selected'); 
-    }
-    // Disable click events on all choices after selection
-    choices[i].style.pointerEvents = 'none'; 
+
+  // Visuals
+  for (let i=0; i<choices.length; i++){
+    choices[i].classList.remove('selected');
   }
-  saveState(); // Save state immediately after an answer is selected
+  choices[idx].classList.add('selected');
+
+  saveState();
 }
 
-document.getElementById('nextBtn').addEventListener('click',()=>{
-  if(selected===null) { 
+// Helper: get list of unanswered questions (1-based indices)
+function getUnansweredQuestions() {
+  const list = [];
+  for (let i = 0; i < total; i++) {
+    if (answers[i] === null) {
+      list.push(i + 1);
+    }
+  }
+  return list;
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  // Must answer current question first
+  if (answers[currentIndex] === null) { 
     alert("Please select an answer before proceeding.");
     return;
   }
+
+  // If we are on the last question (index = total - 1)
+  if (currentIndex === total - 1) {
+    const unanswered = getUnansweredQuestions();
+
+    if (unanswered.length > 0) {
+      const msg = 
+        "You are about to end the quiz, but you haven't answered questions: " +
+        unanswered.join(", ") +
+        ".\n\nDo you still want to submit?";
+      const proceed = confirm(msg);
+      if (!proceed) {
+        return; // stay on the last question
+      }
+    }
+    // Either all answered, or user confirmed submission
+    endQuiz();
+    return;
+  }
+
+  // Normal navigation (not the last question)
   currentIndex++;
-  if(currentIndex>=total){ endQuiz(); return; }
-  
-  // Update state before rendering next question
   saveState(); 
   renderQuestion(); 
 });
 
 function jumpTo(idx){ 
-    currentIndex=idx; 
-    // No need to save state here, it will be saved on next answer/next click
+    currentIndex = idx; 
     renderQuestion(); 
 }
 
 function endQuiz() {
   clearInterval(timerInterval);
-  const timeUsed=TIME_LIMIT - timerSeconds;
-  document.getElementById('questionCard').style.display='none';
-  document.getElementById('endBlock').style.display='block';
+  const timeUsed = TIME_LIMIT - timerSeconds;
+  document.getElementById('questionCard').style.display = 'none';
+  document.getElementById('endBlock').style.display = 'block';
   
-  // Display only completion message, not the score
-  document.getElementById('resultSummary').innerHTML=`
+  document.getElementById('resultSummary').innerHTML = `
     <div style="font-size:18px;font-weight:800">Quiz Complete!</div>
     <div class="small" style="margin-top:6px">Thank you for participating. Your results have been recorded.</div>
     <div class="small">Time taken: ${Math.floor(timeUsed/60)}m ${timeUsed%60}s</div>
   `;
-  sendResultsToSheet(score,timeUsed);
-  clearState(); // Clear state because the quiz is finished
+  sendResultsToSheet(score, timeUsed);
+  clearState();
 }
 
 function sendResultsToSheet(score, timeTaken) {
-  // Retrieve user data from sessionStorage
   const userData = sessionStorage.getItem('userData');
   
   if (!userData) {
@@ -330,22 +2012,20 @@ function sendResultsToSheet(score, timeTaken) {
     return;
   }
   
-  // Parse the stored data
   const { username, email, phone } = JSON.parse(userData);
   
-  // Send all data to the sheet
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify({ 
-      username: username,
-      email: email,
-      phone: phone,
-      score: score, 
-      timeTaken: timeTaken 
+      username,
+      email,
+      phone,
+      score, 
+      timeTaken 
     })
   }).catch(err => console.error(err));
 }
-window.onload=init;
+window.onload = init;
 </script>
 </body>
 </html>
