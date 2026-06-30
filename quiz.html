@@ -422,7 +422,7 @@ function sendResultsToSheet(score, timeTaken) {
     return;
   }
   
-  const { username, email, phone, title, company } = JSON.parse(userData);
+  const { name, email, phone, title, company } = JSON.parse(userData);
   
   fetch(SCRIPT_URL, {
     method: 'POST',
