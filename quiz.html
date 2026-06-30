@@ -422,16 +422,18 @@ function sendResultsToSheet(score, timeTaken) {
     return;
   }
   
-  const { username, email, phone } = JSON.parse(userData);
+  const { username, email, phone, title, company } = JSON.parse(userData);
   
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify({ 
-      username,
+      name,
       email,
       phone,
       score, 
-      timeTaken 
+      timeTaken,
+      title,
+      company
     })
   }).catch(err => console.error(err));
 }
