@@ -80,6 +80,7 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
 <div class="container">
   <div class="quiz card" id="quizArea">
     <h1>SOC Skill Gap assessment</h1>
+    <div class="meta">198 questions • time limit: 90 minutes</div>
     <div class="meta">20 questions • time limit: 10 minutes</div>
     <div id="questionCard" class="card" aria-live="polite">
       <div class="question" id="qText">Loading…</div>
@@ -100,12 +101,12 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
       <div class="stat"><div class="small">Time left</div><div class="timer" id="timeLeft">90:00</div></div>
       <div class="progress"><span id="timeProgress"></span></div>
     </div>
-    
+
     <div>
       <div class="small">Question map</div>
       <div id="map" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
     </div>
-    
+
   </aside>
 </div>
 
@@ -404,7 +405,7 @@ function endQuiz() {
   const timeUsed = TIME_LIMIT - timerSeconds;
   document.getElementById('questionCard').style.display = 'none';
   document.getElementById('endBlock').style.display = 'block';
-  
+
   document.getElementById('resultSummary').innerHTML = `
     <div style="font-size:18px;font-weight:800">Quiz Complete!</div>
     <div class="small" style="margin-top:6px">Thank you for participating. Your results have been recorded.</div>
@@ -416,24 +417,22 @@ function endQuiz() {
 
 function sendResultsToSheet(score, timeTaken) {
   const userData = sessionStorage.getItem('userData');
-  
+
   if (!userData) {
     console.error("User data not found. Score will not be saved."); 
     return;
   }
-  
-  const { name, email, phone, title, company } = JSON.parse(userData);
-  
+
+  const { username, email, phone } = JSON.parse(userData);
+
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify({ 
-      name,
+      username,
       email,
       phone,
       score, 
-      timeTaken,
-      title,
-      company
+      timeTaken 
     })
   }).catch(err => console.error(err));
 }
