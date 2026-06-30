@@ -64,9 +64,7 @@
 </style>
   <h2>SOC Skill Gap assessment
   </h2>
-  <input type="text" id="name" placeholder="Name" required>
-  <input type="text" id="title" placeholder="Title" required>
-  <input type="text" id="company" placeholder="Company" required>
+  <input type="text" id="username" placeholder="Name" required>
   <input type="email" id="email" placeholder="Email" required>
   <input type="tel" id="phone" placeholder="Phone Number" required>
 
@@ -80,9 +78,7 @@ document.getElementById('userForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
 
   const formData = {
-    name: document.getElementById('name').value.trim(),
-    title: document.getElementById('title').value.trim(),
-    company: document.getElementById('company').value.trim(),
+    username: document.getElementById('username').value.trim(),
     email: document.getElementById('email').value.trim(),
     phone: document.getElementById('phone').value.trim(),
     
