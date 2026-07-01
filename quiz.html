@@ -80,7 +80,7 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
 <div class="container">
   <div class="quiz card" id="quizArea">
     <h1>SOC Skill Gap assessment</h1>
-    <div class="meta">20 questions • time limit: 10 minutes</div>
+    <div class="meta">5 questions • time limit: 5 minutes</div>
     <div id="questionCard" class="card" aria-live="polite">
       <div class="question" id="qText">Loading…</div>
       <div class="choices" id="choices"></div>
@@ -97,7 +97,7 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
   </div>
   <aside class="sidebar card" aria-label="status panel">
     <div>
-      <div class="stat"><div class="small">Time left</div><div class="timer" id="timeLeft">90:00</div></div>
+      <div class="stat"><div class="small">Time left</div><div class="timer" id="timeLeft">5:00</div></div>
       <div class="progress"><span id="timeProgress"></span></div>
     </div>
 
@@ -111,7 +111,7 @@ button[disabled]{opacity:0.45;cursor:not-allowed;}
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3cb0GPBVrnnug-Obudwdr3Qayz1hEbhomS6A7GmUrSUSctjzsP0rawLr_I4QEKKOO/exec"; // Google Apps Script Web App URL (POST)
-const TIME_LIMIT = 10 * 60; // 90 minutes in seconds
+const TIME_LIMIT = 5 * 60; // 90 minutes in seconds
 
 const QUESTIONS = [
 
@@ -125,35 +125,6 @@ const QUESTIONS = [
 
 {q:"SOC Scenario: A user claims their system is running slow, and unknown programs are auto-starting. What is likely the cause?",choices:["Malware infection","GPU overload","Network congestion","Incorrect OS update"],answer:0},
 
-{q:"SOC Scenario: You find that firewall logs show repeated requests to unreachable internal hosts. What is this behavior?",choices:["Network scan / reconnaissance","File transfer","DNS query","Patch update"],answer:0},
-
-{q:"SOC Scenario: SOC alerts show login at 3 AM from a country the employee has never visited. What is this?",choices:["Legitimate remote work","Impossible travel alert","DNS misconfiguration","Email sync"],answer:1},
-
-{q:"SOC Scenario: You detect repeated SQL queries with strange characters like ' OR 1=1 -- . What is this?",choices:["Input sanitization test","SQL Injection attempt","Server backup","API timeout"],answer:1},
-
-{q:"SOC Scenario: A device suddenly starts communicating with a known malicious C2 server. What does this indicate?",choices:["OS update","Command-and-control communication","VPN sync","DNS flush"],answer:1},
-
-{q:"SOC Scenario: Your IDS reports hundreds of SYN packets but no ACK responses. What is this?",choices:["SYN flood attack","Normal handshake","ARP broadcast","VPN probing"],answer:0},
-
-{q:"SOC Scenario: A user reports their files being replaced with .locked extensions. What attack is this?",choices:["Ransomware","Phishing","Brute force","Keylogging"],answer:0},
-
-{q:"SOC Scenario: You detect a script that records keyboard input silently. What type of malware is this?",choices:["Keylogger","Worm","Rootkit","Spyware"],answer:0},
-
-{q:"SOC Scenario: Logs show a user account accessing sensitive HR files without authorization. What is this?",choices:["Privilege misuse","System update","Backup verification","License sync"],answer:0},
-
-{q:"SOC Scenario: A device keeps requesting the same DNS entry repeatedly and rapidly. What does this signal?",choices:["DNS tunneling","Cache warming","DHCP renewal","ARP request"],answer:0},
-
-{q:"SOC Scenario: You detect multiple endpoint alerts showing the same malware moving laterally. What is happening?",choices:["Lateral movement","Port forwarding","Configuration sync","DHCP cycling"],answer:0},
-
-{q:"SOC Scenario: Firewall logs show unusual outbound connections on port 4444. What does this suggest?",choices:["Reverse shell","Printer update","SSH maintenance","DHCP"],answer:0},
-
-{q:"SOC Scenario: An attacker changes system logs to hide their activity. What attack stage is this?",choices:["Covering tracks","Reconnaissance","Delivery","Exploitation"],answer:0},
-
-{q:"SOC Scenario: The SOC receives alerts for mass file deletion on a shared folder. What does this indicate?",choices:["Insider threat","Normal cleanup","Compression event","Patch rollback"],answer:0},
-
-{q:"SOC Scenario: A critical system begins running unsigned executables. What is this likely?",choices:["Malicious execution","GPU update","Port negotiation","Cloud sync"],answer:0},
-
-{q:"SOC Scenario: You detect abnormal PowerShell commands like Invoke-WebRequest pulling scripts. What does this mean?",choices:["Malicious PowerShell activity","Printer spooler error","User automation","Backup job"],answer:0}
 
 ];
 
